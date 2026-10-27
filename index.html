@@ -213,6 +213,7 @@
 <div id="app"><noscript>Write-Off needs JavaScript to run.</noscript></div>
 <script src="scenarios.js"></script>
 <script src="scenes.js"></script>
+<script src="rules.js"></script>
 <script>
 (function () {
 'use strict';
@@ -787,6 +788,40 @@ document.addEventListener('keydown', e => {
 
 newGame();
 render();
+
+// Hand-check from SPEC section 3. Run checkFlip() in the console.
+window.checkFlip = function () {
+  const dec = STOPS.find(s => s.id === 'animated');
+  if (!dec) { console.log('checkFlip: no December stop (id "animated") in scenarios.js'); return false; }
+  const rules = [null, 'threeYear', 'writeOffsCount', 'rightsRevert', 'creatorVeto', 'oneFewerBuyer'];
+  const expectWin = { none: 'shelve', threeYear: 'release', writeOffsCount: 'sell' };
+  let pass = true;
+  rules.forEach(rule => {
+    const name = rule || 'none';
+    const rows = dec.choices.map(c => {
+      const eff = { thisYear: c.thisYear || 0, threeYear: c.threeYear || 0, writeOff: c.writeOff || 0 };
+      const delta = RULES ? RULES.bonusDelta(rule, eff, c) : eff.thisYear / 10;
+      const disabled = !!(RULES && RULES.disabledReason && RULES.disabledReason(rule, c));
+      return { id: c.id, delta, disabled };
+    });
+    const live = rows.filter(r => !r.disabled).sort((a, b) => b.delta - a.delta);
+    let line = (name + '              ').slice(0, 15) + rows.map(r => r.id + ' ' + (r.disabled ? 'disabled' : (r.delta >= 0 ? '+' : '') + r.delta)).join('   ');
+    if (expectWin[name]) {
+      const ok = live.length && live[0].id === expectWin[name] && live.filter(r => r.delta === live[0].delta).length === 1;
+      line += '   => ' + (ok ? 'PASS' : 'FAIL') + ' (' + expectWin[name] + ' should win)';
+      if (!ok) pass = false;
+    }
+    if (name === 'creatorVeto') {
+      const sh = rows.find(r => r.id === 'shelve');
+      const ok = !!(sh && sh.disabled);
+      line += '   => ' + (ok ? 'PASS' : 'FAIL') + ' (shelve should be disabled)';
+      if (!ok) pass = false;
+    }
+    console.log(line);
+  });
+  console.log(pass ? 'checkFlip: PASS' : 'checkFlip: FAIL. Adjust thisYear/threeYear/writeOff on the December choices in scenarios.js, not the formulas.');
+  return pass;
+};
 
 window.WRITEOFF = { get state() { return state; }, render, travelTo, choose, stopView, effectsFor, bonusDeltaFor, newGame };
 })();
