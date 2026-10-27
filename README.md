@@ -4,7 +4,7 @@ An Oregon Trail style game about why studios shelve finished movies. MNGT 301 se
 
 ## Play it
 
-Open `index.html` in any browser, or visit the GitHub Pages URL once it's deployed. Works on phones.
+Open `index.html` in any browser, or visit the GitHub Pages URL once it's deployed. Works on phones. Number keys 1 to 3 pick choices on a keyboard.
 
 ## What's in here
 
@@ -15,8 +15,10 @@ Open `index.html` in any browser, or visit the GitHub Pages URL once it's deploy
 | `PROMPTS.md` | The build phases to paste into Claude Code, in order | Blake |
 | `scenarios.js` | Every stop, choice, outcome card, source, random event and rule card | Writers |
 | `index.html` | The engine and styles | Claude Code |
-| `scenes.js` | The pixel LA backgrounds | Claude Code, then the art teammate |
+| `scenes.js` | The pixel LA backgrounds, the car and the tombstone | Claude Code, then the art teammate |
 | `rules.js` | Round-two rule math | Claude Code |
+| `test/play.js` | Optional Playwright script that plays both rounds and reports errors | Claude Code |
+| `test/scenes.html` | A gallery page showing all ten scenes side by side | The art teammate |
 
 ## Editing content
 
@@ -24,7 +26,34 @@ Writers only edit `scenarios.js`. Each stop has a three-sentence `setup`, three 
 
 ## Deploying
 
-Push to GitHub, then Settings > Pages > Deploy from a branch > `main` > `/ (root)`. The site goes live at `https://<user>.github.io/write-off/` in a minute or two. That link is what we submit to Canvas.
+The game is four static files at the repo root (`index.html`, `scenarios.js`, `scenes.js`, `rules.js`). All script tags are relative paths, so the same files work opened from a folder on your laptop and served from GitHub Pages.
+
+1. Create an empty repo on GitHub called `write-off` (public, no README).
+2. From this folder:
+
+   ```
+   git remote add origin https://github.com/<user>/write-off.git
+   git push -u origin main
+   ```
+
+3. On GitHub: Settings > Pages > Build and deployment > Source: Deploy from a branch > Branch: `main`, folder `/ (root)` > Save.
+4. Wait a minute or two, then open `https://<user>.github.io/write-off/` on your phone. That link is what we submit to Canvas.
+
+Every later `git push` to `main` redeploys automatically.
+
+## Testing
+
+Open `index.html` and play a round. For the automated check, `test/play.js` plays both rounds in headless Chromium at phone width, prints the two receipts, runs `checkFlip()`, and fails if anything throws, if the page scrolls sideways, if a choice button is under 48px, or if an outcome card needs a scroll bar.
+
+```
+node test/play.js                  # full speed, screenshots in test/out/
+FAST=1 node test/play.js           # reduced motion, no travel animation
+R1=shelve R2=release RULE=rightsRevert node test/play.js   # pick strategies and the round-two rule
+```
+
+It needs Playwright with Chromium available to Node (`npm i -g playwright && npx playwright install chromium`). That is a tool on your machine, not a project dependency; the game itself has none.
+
+`checkFlip()` also runs from the browser console on any screen.
 
 ## Build log
 
