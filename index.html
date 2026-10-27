@@ -1,0 +1,795 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>Write-Off</title>
+<meta name="description" content="An Oregon Trail through Los Angeles. Twelve real decisions about why studios shelve finished movies, then the same year with one rule changed.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: dark;
+    --sky: #9bd3e8; --skyDusk: #e9a26a; --skyNight: #141a3a; --sun: #ffd97a;
+    --sand: #e8d8b0; --terracotta: #c96a4a; --palm: #3f8f4f; --palmDark: #2a5f36;
+    --asphalt: #5d5d66; --concrete: #b8b4a8; --glass: #7fb2c9; --white: #f6f3ea;
+    --ink: #1b1b1f; --crt: #5cf27a; --red: #e5484d; --gold: #f2c14e;
+    --black: #000;
+    --pixel: "Press Start 2P", monospace;
+    --mono: VT323, "Courier New", monospace;
+    --gl: max(16px, env(safe-area-inset-left, 0px));
+    --gr: max(16px, env(safe-area-inset-right, 0px));
+    --sab: env(safe-area-inset-bottom, 0px);
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { background: var(--ink); -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--ink); color: var(--white);
+    font-family: var(--mono); font-size: 22px; line-height: 1.2;
+    min-height: 100vh; min-height: 100dvh;
+  }
+  #app { max-width: 720px; margin: 0 auto; padding: 0 var(--gr) 0 var(--gl); min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; }
+  .screen { flex: 1; display: flex; flex-direction: column; min-height: 100vh; min-height: 100dvh; outline: none; padding-bottom: 24px; }
+  .screen.center { justify-content: center; text-align: center; }
+  h1, h2, h3 { font-family: var(--pixel); font-weight: 400; margin: 0; line-height: 1.5; }
+  p { margin: 0; }
+  a { color: var(--gold); }
+  button { font: inherit; color: inherit; background: none; border: 0; padding: 0; margin: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+  .lbl { font-family: var(--pixel); font-size: 9px; color: var(--gold); text-transform: uppercase; letter-spacing: .5px; line-height: 1.6; }
+  .h { font-size: 15px; color: var(--white); }
+
+  /* Buttons */
+  .btn {
+    display: block; width: 100%; min-height: 48px; padding: 14px 16px;
+    font-family: var(--pixel); font-size: 11px; line-height: 1.6; text-transform: uppercase; text-align: center;
+    background: var(--ink); color: var(--white); border: 3px solid var(--white); box-shadow: 4px 4px 0 var(--asphalt);
+    transition: transform .06s, box-shadow .06s;
+  }
+  .btn:hover { background: var(--white); color: var(--ink); }
+  .btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--asphalt); }
+  .btn.primary { background: var(--gold); color: var(--ink); border-color: var(--gold); }
+  .btn.primary:hover { background: var(--white); border-color: var(--white); }
+  .btn.quiet { border-color: var(--concrete); color: var(--concrete); box-shadow: none; }
+  .btn.quiet:hover { background: var(--concrete); color: var(--ink); }
+  .stack { display: grid; gap: 14px; margin: 16px 0; }
+  .link { font-family: var(--pixel); font-size: 9px; color: var(--concrete); text-decoration: underline; text-transform: uppercase; }
+
+  /* Scene */
+  .scene-wrap { position: relative; aspect-ratio: 16 / 9; background: var(--skyNight); overflow: hidden; border: 3px solid var(--asphalt); flex-shrink: 0; }
+  .scene-wrap svg { display: block; width: 100%; height: 100%; image-rendering: pixelated; image-rendering: crisp-edges; }
+  .scene-wrap::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(27,27,31,0) 0 3px, rgba(27,27,31,.16) 3px 4px); }
+  .scene-wrap .car { transform: translateX(272px); }
+  .scene-wrap.travelling .car { animation: drive 1.2s linear forwards; }
+  .scene-wrap.travelling .far { animation: slide-far 1.2s linear forwards; }
+  .scene-wrap.travelling .mid { animation: slide-mid 1.2s linear forwards; }
+  .scene-wrap.travelling .near { animation: slide-near 1.2s linear forwards; }
+  @keyframes drive { from { transform: translateX(-32px); } to { transform: translateX(272px); } }
+  @keyframes slide-far { from { transform: translateX(4px); } to { transform: translateX(0); } }
+  @keyframes slide-mid { from { transform: translateX(8px); } to { transform: translateX(0); } }
+  @keyframes slide-near { from { transform: translateX(16px); } to { transform: translateX(0); } }
+  @media (max-width: 720px) {
+    .scene-wrap { margin-left: calc(-1 * var(--gl)); margin-right: calc(-1 * var(--gr)); border-left: 0; border-right: 0; border-top: 0; }
+  }
+
+  /* Title */
+  .hero { margin-bottom: 0; }
+  .hero-text { position: absolute; left: 0; right: 0; bottom: 14%; text-align: center; pointer-events: none; }
+  .logo { font-size: clamp(30px, 9vw, 60px); color: var(--white); line-height: 1; text-shadow: 4px 4px 0 var(--red), 8px 8px 0 var(--ink); letter-spacing: 2px; }
+  .tagline { font-size: 26px; text-align: center; margin: 20px 0 6px; color: var(--sand); }
+  .foot { font-family: var(--pixel); font-size: 8px; color: var(--asphalt); text-align: center; line-height: 1.8; margin-top: auto; padding-top: 24px; }
+
+  /* Setup */
+  .setup .h { margin: 24px 0 18px; }
+  .field { display: block; margin: 0 0 18px; }
+  .field input { display: block; width: 100%; margin-top: 8px; padding: 10px 12px; font-family: var(--mono); font-size: 26px; color: var(--crt); background: var(--black); border: 3px solid var(--asphalt); caret-color: var(--crt); }
+  .field input::placeholder { color: var(--asphalt); }
+  .field input:focus { border-color: var(--crt); outline: none; }
+  .pace { margin: 8px 0 20px; }
+  .pace-btn { display: grid; grid-template-columns: 22px 1fr; gap: 2px 12px; align-items: center; text-align: left; width: 100%; min-height: 48px; padding: 12px 14px; border: 3px solid var(--asphalt); background: var(--ink); color: var(--white); }
+  .pace-btn .box { width: 14px; height: 14px; border: 3px solid var(--concrete); grid-row: 1 / span 2; }
+  .pace-btn.on { border-color: var(--gold); }
+  .pace-btn.on .box { background: var(--gold); border-color: var(--gold); }
+  .pace-btn .pname { font-family: var(--pixel); font-size: 11px; line-height: 1.6; }
+  .pace-btn .ptext { font-size: 21px; color: var(--concrete); line-height: 1.1; }
+
+  /* Travel */
+  .travel-info { text-align: center; padding: 20px 0 8px; flex: 1; }
+  .travel .month { font-family: var(--pixel); font-size: 22px; color: var(--gold); line-height: 1.4; text-transform: uppercase; animation: pop .5s steps(4) both; }
+  .travel .dest { font-size: 24px; color: var(--sand); margin-top: 6px; }
+  .note { font-size: 23px; line-height: 1.15; margin: 16px auto 0; max-width: 560px; }
+  .note.tomb { color: var(--concrete); }
+  .note.tomb::before { content: "\271D  "; }
+  .note.note { color: var(--sun); }
+  .travel-info .btn { max-width: 360px; margin: 22px auto 0; }
+  @keyframes pop { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  /* Stop */
+  .where { font-family: var(--pixel); font-size: 9px; color: var(--gold); text-transform: uppercase; letter-spacing: .5px; margin: 18px 0 8px; line-height: 1.6; }
+  .stop .h { margin-bottom: 12px; }
+  .setup-text { font-size: 24px; line-height: 1.15; margin: 0 0 18px; }
+  .choices { display: grid; gap: 12px; margin-bottom: 20px; }
+  .choice { position: relative; display: block; width: 100%; text-align: left; min-height: 48px; padding: 12px 14px 10px 46px; border: 3px solid var(--white); background: var(--ink); color: var(--white); box-shadow: 4px 4px 0 var(--asphalt); transition: transform .06s, box-shadow .06s; }
+  .choice .n { position: absolute; left: 13px; top: 13px; font-family: var(--pixel); font-size: 11px; color: var(--gold); line-height: 1.6; }
+  .choice .label { display: block; font-family: var(--pixel); font-size: 11px; line-height: 1.7; }
+  .choice .hint { display: block; font-size: 21px; line-height: 1.1; color: var(--gold); margin-top: 6px; }
+  .choice:hover:not(.off) { background: var(--white); color: var(--ink); }
+  .choice:hover:not(.off) .hint, .choice:hover:not(.off) .n { color: var(--ink); }
+  .choice:active:not(.off) { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--asphalt); }
+  .choice.off { border-color: var(--asphalt); color: var(--concrete); box-shadow: none; cursor: not-allowed; }
+  .choice.off .n { color: var(--asphalt); }
+  .choice.off .hint { color: var(--red); }
+
+  /* Status bar */
+  .status { position: sticky; bottom: 0; margin-top: auto; margin-left: calc(-1 * var(--gl)); margin-right: calc(-1 * var(--gr)); padding: 10px var(--gr) calc(10px + var(--sab)) var(--gl); background: var(--black); border-top: 3px solid var(--asphalt); color: var(--crt); font-family: var(--pixel); font-size: 10px; line-height: 1.4; display: grid; grid-template-columns: repeat(4, 1fr) auto; gap: 8px 12px; align-items: start; z-index: 5; }
+  .status .k { display: block; font-size: 7px; color: var(--concrete); margin-bottom: 5px; letter-spacing: .5px; }
+  .status .v { display: block; white-space: nowrap; }
+  .status .v.neg { color: var(--red); }
+  .status .sub { display: block; font-size: 7px; color: var(--concrete); margin-top: 4px; }
+  .status .src { font-family: var(--pixel); font-size: 8px; color: var(--concrete); text-decoration: underline; align-self: end; justify-self: end; padding: 4px 0; }
+  @media (max-width: 560px) {
+    .status { grid-template-columns: 1fr 1fr auto; gap: 10px 12px; }
+    .status .src { grid-column: 3; grid-row: 1 / span 2; align-self: center; }
+  }
+
+  /* Overlays */
+  .overlay { position: fixed; inset: 0; z-index: 20; background: rgba(27, 27, 31, .82); display: flex; align-items: flex-end; justify-content: center; outline: none; }
+  .card { width: 100%; max-width: 720px; max-height: 100vh; max-height: 100dvh; overflow: auto; background: var(--ink); border: 3px solid var(--white); border-bottom: 0; padding: 18px var(--gr) calc(18px + var(--sab)) var(--gl); animation: slide-up .32s cubic-bezier(.2, .8, .2, 1) both; }
+  @keyframes slide-up { from { transform: translateY(100%); } to { transform: none; } }
+  .cl { margin-bottom: 12px; }
+  .cl-k { display: block; font-family: var(--pixel); font-size: 8px; color: var(--concrete); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; line-height: 1.6; }
+  .cl-v { display: block; font-size: 22px; line-height: 1.12; }
+  .cl.you .cl-v { color: var(--sand); }
+  .tags { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 6px 0 12px; }
+  .driver { font-family: var(--pixel); font-size: 9px; color: var(--ink); background: var(--gold); padding: 7px 9px 5px; line-height: 1; white-space: nowrap; }
+  .chip { font-size: 21px; color: var(--crt); border: 2px solid var(--crt); padding: 3px 10px; line-height: 1.15; }
+  .source { display: inline-block; font-size: 20px; color: var(--glass); margin-bottom: 16px; }
+  .source::after { content: " \2197"; }
+
+  /* Shelved */
+  .shelved { position: fixed; inset: 0; z-index: 30; width: 100%; background: var(--black); color: var(--white); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; font-family: var(--pixel); font-size: 12px; line-height: 2; padding: 24px var(--gr) 24px var(--gl); }
+  .shelved .stone { display: block; width: 120px; margin-bottom: 20px; }
+  .shelved .stone svg { display: block; width: 100%; height: auto; }
+  .shelved .line1 { display: block; font-size: 13px; color: var(--white); margin-bottom: 8px; }
+  .shelved .line2, .shelved .line3 { display: block; color: var(--concrete); }
+  .shelved .tap { display: block; margin-top: 36px; font-size: 9px; color: var(--asphalt); animation: blink 1.2s steps(2) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* Receipt */
+  .paper { position: relative; background: var(--white); color: var(--ink); margin: 28px 0 20px; padding: 24px 18px; font-size: 22px; line-height: 1.15; }
+  .paper::before, .paper::after { content: ""; position: absolute; left: 0; right: 0; height: 8px; background: repeating-linear-gradient(90deg, var(--white) 0 8px, transparent 8px 16px); }
+  .paper::before { bottom: 100%; }
+  .paper::after { top: 100%; background-position: 8px 0; }
+  .paper-head { text-align: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 3px dashed var(--concrete); }
+  .ph1 { font-family: var(--pixel); font-size: 13px; line-height: 1.6; }
+  .ph2 { font-family: var(--pixel); font-size: 8px; color: var(--asphalt); margin-top: 6px; line-height: 1.6; }
+  .row { display: flex; justify-content: space-between; gap: 14px; padding: 6px 0; border-bottom: 2px dotted var(--concrete); }
+  .row span:first-child { color: var(--asphalt); flex-shrink: 0; }
+  .row span:last-child { text-align: right; }
+  .row.total { font-family: var(--pixel); font-size: 10px; border-bottom: 0; border-top: 3px dashed var(--concrete); margin-top: 8px; padding-top: 12px; line-height: 1.6; }
+  .rline { padding: 8px 0; border-bottom: 2px dotted var(--concrete); color: var(--red); }
+  .rnames { font-size: 19px; color: var(--asphalt); padding: 2px 0 6px; border-bottom: 2px dotted var(--concrete); }
+  .cmp-head { font-family: var(--pixel); font-size: 9px; margin: 20px 0 8px; line-height: 1.6; text-transform: uppercase; }
+  .cmp { padding: 8px 0; border-bottom: 2px dotted var(--concrete); }
+  .cmp .t { font-family: var(--pixel); font-size: 8px; color: var(--asphalt); margin-bottom: 4px; line-height: 1.6; }
+  .cmp .you b, .cmp .real b { font-weight: 400; color: var(--asphalt); }
+  .cmp.match .t::after { content: " \2713 MATCH"; color: var(--palmDark); }
+  .cmp.match .you, .cmp.match .real { color: var(--palmDark); }
+
+  /* Rule picker */
+  .rule-card { display: block; width: 100%; text-align: left; padding: 14px 16px; border: 3px solid var(--white); background: var(--ink); color: var(--white); box-shadow: 4px 4px 0 var(--asphalt); min-height: 48px; }
+  .rule-card .rname { display: block; font-family: var(--pixel); font-size: 11px; line-height: 1.6; margin-bottom: 6px; color: var(--gold); }
+  .rule-card .rtext { display: block; font-size: 22px; line-height: 1.12; }
+  .rule-card:hover:not(.off) { background: var(--white); color: var(--ink); }
+  .rule-card:hover:not(.off) .rname { color: var(--ink); }
+  .rule-card.off { border-color: var(--asphalt); color: var(--concrete); box-shadow: none; cursor: not-allowed; }
+  .rule-card.off .rname { color: var(--asphalt); }
+  .rule-card .soon { display: inline-block; font-family: var(--pixel); font-size: 8px; color: var(--red); margin-left: 8px; }
+  .lead { font-size: 24px; line-height: 1.15; margin: 10px 0 16px; color: var(--sand); }
+
+  /* Sources / about / exit */
+  .src-list { list-style: none; padding: 0; margin: 10px 0 20px; }
+  .src-list li { padding: 10px 0; border-bottom: 2px dotted var(--asphalt); line-height: 1.12; }
+  .src-list .outlet { font-family: var(--pixel); font-size: 9px; color: var(--gold); display: block; margin-bottom: 6px; line-height: 1.6; }
+  .src-list a { color: var(--glass); }
+  .src-list .date { color: var(--concrete); }
+  textarea.ans { display: block; width: 100%; min-height: 86px; margin: 8px 0 16px; padding: 10px 12px; font-family: var(--mono); font-size: 24px; color: var(--crt); background: var(--black); border: 3px solid var(--asphalt); resize: vertical; }
+  textarea.ans:focus { border-color: var(--crt); outline: none; }
+  .final-cmp { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; margin: 10px 0 18px; }
+  .final-cmp .fc-h { font-family: var(--pixel); font-size: 9px; color: var(--gold); line-height: 1.6; padding: 6px 0; border-bottom: 3px solid var(--asphalt); }
+  .final-cmp .fc { padding: 6px 0; border-bottom: 2px dotted var(--asphalt); font-size: 21px; line-height: 1.12; }
+  .final-cmp .fc small { display: block; font-family: var(--pixel); font-size: 7px; color: var(--concrete); line-height: 1.6; margin-bottom: 2px; }
+  .toast { font-family: var(--pixel); font-size: 9px; color: var(--crt); text-align: center; line-height: 1.6; min-height: 16px; margin-top: -4px; }
+  .fail-h { font-size: 16px; color: var(--red); margin-bottom: 16px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div id="app"><noscript>Write-Off needs JavaScript to run.</noscript></div>
+<script src="scenarios.js"></script>
+<script src="scenes.js"></script>
+<script>
+(function () {
+'use strict';
+
+const app = document.getElementById('app');
+const DATA = window.WRITEOFF_DATA;
+const SCENES = window.WRITEOFF_SCENES || {};
+const RULES = window.WRITEOFF_RULES || null;
+
+if (!DATA || !Array.isArray(DATA.stops) || !DATA.stops.length) {
+  app.innerHTML = '<section class="screen center"><h1 class="fail-h">Content failed to load</h1><p class="lead">scenarios.js did not load. Keep it next to index.html and reload the page.</p></section>';
+  return;
+}
+
+const STOPS = DATA.stops;
+const PROJECTS = DATA.projects || [];
+const PACES = DATA.pace || [];
+const RULE_CARDS = DATA.rules || [];
+
+let state = null;
+let timer = null;
+let lastKey = '';
+
+// ---------- helpers ----------
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const clamp = (n, lo, hi) => Math.min(hi, Math.max(lo, n));
+const r1 = n => Math.round(n * 10) / 10;
+const num = n => Math.round(n).toLocaleString('en-US');
+const reducedMotion = () => !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+const projectName = id => { const p = PROJECTS.find(p => p.id === id); return p ? p.name : String(id || '').toUpperCase(); };
+const ruleById = id => RULE_CARDS.find(r => r.id === id) || null;
+const trustLabel = g => (g < 35 ? 'Low' : g > 65 ? 'High' : 'Medium');
+
+function money(n, signed) {
+  const a = Math.abs(Math.round(n));
+  if (a === 0) return '$0';
+  const s = a >= 1000 ? '$' + (a / 1000).toFixed(1).replace(/\.0$/, '') + 'B' : '$' + a + 'M';
+  if (n < 0) return '-' + s;
+  return (signed ? '+' : '') + s;
+}
+const money1 = n => '$' + n.toFixed(1) + 'M';
+const debtFmt = d => '$' + r1(d).toFixed(1) + 'B';
+
+function sceneHTML(name, opts) {
+  const fn = typeof SCENES[name] === 'function' ? SCENES[name] : SCENES.placeholder;
+  if (typeof fn !== 'function') return '';
+  return fn(Object.assign({ car: true, label: name }, opts || {}));
+}
+function tombstoneSVG() {
+  if (typeof SCENES.tombstone === 'function') return SCENES.tombstone();
+  return '<svg viewBox="0 0 64 80" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="12" y="12" width="40" height="56" fill="#b8b4a8"/><rect x="16" y="8" width="32" height="4" fill="#b8b4a8"/><rect x="4" y="68" width="56" height="8" fill="#5d5d66"/></svg>';
+}
+
+// ---------- state ----------
+function newGame() {
+  state = {
+    screen: 'title', round: 1, rule: null, pace: 'steady',
+    player: { name: 'Exec', studio: 'Burbank Pictures' },
+    draft: { name: '', studio: '' },
+    log: [], results: {}, exit: { hardest: '', rule: '' }, from: null
+  };
+  resetRound(1, null);
+}
+
+function resetRound(round, rule) {
+  const pace = PACES.find(p => p.id === state.pace) || PACES[0] || { debtTarget: 46 };
+  Object.assign(state, {
+    round, rule: rule || null,
+    month: 0, stopIndex: -1,
+    cash: 500, debt: 53.0, debtTarget: pace.debtTarget, bonus: 100, crew: 2400, goodwill: 50, buyers: 2,
+    shelved: [], sold: [], reverts: [], choices: [], fired: [], pendingEvent: null,
+    sentHome: 0, payVote: null, receipt: null, travel: null, last: null
+  });
+  if (RULES && typeof RULES.startState === 'function') Object.assign(state, RULES.startState(rule) || {});
+}
+
+function addLog(entry) {
+  const stop = state.stopIndex >= 0 ? STOPS[state.stopIndex] : null;
+  const e = Object.assign({
+    t: new Date().toISOString(), round: state.round, rule: state.rule || 'none',
+    month: stop ? stop.monthName : '', stop: stop ? stop.title : '',
+    effects: { cash: Math.round(state.cash), debt: r1(state.debt), bonus: Math.round(state.bonus), crew: state.crew }
+  }, entry);
+  state.log.push(e);
+  return e;
+}
+
+// ---------- stops and choices ----------
+function stopView(stop) {
+  if (stop.variants) {
+    const key = state.shelved.length === 0 ? 'nothing' : (state.buyers > 0 ? 'offer' : 'nobuyer');
+    const v = stop.variants[key] || stop.variants.nothing;
+    return { setup: v.setup, choices: v.choices, variant: key };
+  }
+  return { setup: stop.setup, choices: stop.choices, variant: null };
+}
+function allChoices(stop) {
+  if (stop.variants) return Object.keys(stop.variants).reduce((a, k) => a.concat(stop.variants[k].choices), []);
+  return stop.choices;
+}
+function labelFor(stop, id) { const c = allChoices(stop).find(c => c.id === id); return c ? c.label : id; }
+
+function effectsFor(choice) {
+  const k = choice.perShelved ? Math.max(1, state.shelved.length) : 1;
+  return {
+    thisYear: (choice.thisYear || 0) * k, threeYear: (choice.threeYear || 0) * k,
+    writeOff: (choice.writeOff || 0) * k, goodwill: (choice.goodwill || 0) * k,
+    crew: choice.crew || 0, count: k
+  };
+}
+function bonusDeltaFor(choice, eff) {
+  if (RULES && typeof RULES.bonusDelta === 'function') return RULES.bonusDelta(state.rule, eff, choice);
+  return eff.thisYear / 10;
+}
+function hintFor(choice, eff) {
+  if (RULES && typeof RULES.hint === 'function') return RULES.hint(state.rule, eff, choice);
+  return 'Finance says: ' + money(eff.thisYear, true) + ' this year.';
+}
+function disabledReason(choice) {
+  if (choice.needsBuyer && state.buyers <= 0) return 'No buyer left in town.';
+  if (choice.needsShelved && state.shelved.length === 0) return 'Nothing on the shelf to sell.';
+  if (RULES && typeof RULES.disabledReason === 'function') return RULES.disabledReason(state.rule, choice) || null;
+  return null;
+}
+
+function computePayVote() {
+  const against = Math.round(clamp(35 + (state.bonus - 100) * 0.8 + (50 - state.goodwill) * 0.6, 15, 85));
+  const text = against > 50
+    ? against + '% of shares voted against your pay. The vote is advisory. Nothing changes.'
+    : (100 - against) + '% of shares approved your pay.';
+  return { against, text };
+}
+
+function choose(choiceId) {
+  const stop = STOPS[state.stopIndex];
+  const view = stopView(stop);
+  const choice = view.choices.find(c => c.id === choiceId);
+  if (!choice || disabledReason(choice)) return;
+  const eff = effectsFor(choice);
+  const delta = bonusDeltaFor(choice, eff);
+
+  state.cash += eff.thisYear;
+  state.debt -= eff.thisYear / 1000;
+  state.bonus = clamp(state.bonus + delta, 0, 200);
+  state.goodwill = clamp(state.goodwill + eff.goodwill, 0, 100);
+  if (eff.crew < 0) state.sentHome += -eff.crew;
+  state.crew = Math.max(0, state.crew + eff.crew);
+
+  let sold = [];
+  if (choice.shelves && choice.kills) {
+    state.shelved.push(choice.kills);
+    if (state.rule === 'rightsRevert') state.reverts.push(choice.kills);
+  }
+  if (choice.unshelves && state.shelved.length) {
+    sold = state.shelved.slice();
+    state.sold = state.sold.concat(sold);
+    state.shelved = [];
+    state.reverts = [];
+  }
+  let youLine = choice.result || '';
+  if (stop.id === 'payvote') { state.payVote = computePayVote(); youLine = state.payVote.text; }
+  if (state.cash < 0 && state.fired.indexOf('bankers') < 0) state.pendingEvent = 'bankers';
+
+  state.choices.push({ stopId: stop.id, choiceId: choice.id, label: choice.label, variant: view.variant, offered: view.choices.map(c => c.id), delta });
+  state.last = { stop, choice, eff, delta, sold, youLine };
+  addLog({ type: 'choice', choice: choice.label, bonusDelta: r1(delta), card: { did: stop.card.did, next: stop.card.next, source: stop.card.source } });
+  state.screen = (choice.shelves && choice.kills) ? 'shelved' : 'card';
+  render();
+}
+
+// ---------- trail flow ----------
+function travelTo(i) {
+  clearTimeout(timer);
+  if (i >= STOPS.length) { finishRound(); return; }
+  const stop = STOPS[i];
+  state.stopIndex = i;
+  state.month = stop.month;
+  state.debt -= 0.6;
+  const notes = [];
+  if (stop.onArrive) {
+    if (typeof stop.onArrive.buyers === 'number') state.buyers = Math.max(0, state.buyers + stop.onArrive.buyers);
+    if (stop.onArrive.note) notes.push({ kind: 'note', text: stop.onArrive.note });
+  }
+  state.travel = { notes, event: null, phase: 'driving', outcome: null };
+  addLog({ type: 'travel', text: 'Drove to ' + stop.stop + '.' });
+  if (reducedMotion() && !state.travel.event && !notes.length) { arrive(); return; }
+  state.screen = 'travel';
+  render();
+}
+function afterDrive() {
+  const t = state.travel;
+  if (t.event) { t.phase = 'event'; render(); }
+  else if (t.notes.length) { t.phase = 'wait'; render(); }
+  else arrive();
+}
+function arrive() { clearTimeout(timer); state.screen = 'stop'; render(); }
+
+function finishRound() {
+  const lines = [];
+  if (RULES && typeof RULES.receiptPenalty === 'function') {
+    const extra = RULES.receiptPenalty(state.rule, state, projectName);
+    if (extra) {
+      state.bonus = clamp(state.bonus + (extra.bonus || 0), 0, 200);
+      state.goodwill = clamp(state.goodwill + (extra.goodwill || 0), 0, 100);
+      (extra.lines || []).forEach(l => lines.push(l));
+    }
+  }
+  if (!state.payVote) state.payVote = computePayVote();
+  const rows = STOPS.map(stop => {
+    const rec = state.choices.find(c => c.stopId === stop.id);
+    const offered = rec ? rec.offered.indexOf(stop.real) >= 0 : false;
+    return { month: stop.monthName, title: stop.title, yours: rec ? rec.label : '(no choice)', real: labelFor(stop, stop.real), match: !!rec && rec.choiceId === stop.real, offered };
+  });
+  const debt = r1(state.debt);
+  const dec = state.choices.find(c => c.stopId === 'animated');
+  state.receipt = {
+    round: state.round, rule: state.rule, debt, target: state.debtTarget, hit: debt <= state.debtTarget,
+    bonus: state.bonus, bonusDollars: 24 * state.bonus / 100,
+    shelved: state.shelved.slice(), sold: state.sold.slice(), sentHome: state.sentHome, crew: state.crew,
+    trust: trustLabel(state.goodwill), payVote: state.payVote, lines, rows,
+    compared: rows.filter(r => r.offered).length, matches: rows.filter(r => r.match).length,
+    december: dec ? dec.label : '(no choice)'
+  };
+  state.results[state.round] = state.receipt;
+  addLog({ type: 'receipt', text: receiptText(state.receipt) });
+  state.screen = 'receipt';
+  render();
+}
+function receiptText(r) {
+  return 'Round ' + r.round + (r.rule ? ' (' + r.rule + ')' : '') + ': debt ' + debtFmt(r.debt) + ' vs ' + debtFmt(r.target) + ' ' + (r.hit ? 'hit' : 'missed') +
+    '; bonus ' + Math.round(r.bonus) + '% (' + money1(r.bonusDollars) + '); shelved ' + (r.shelved.length + r.sold.length) +
+    '; crew sent home ' + r.sentHome + '; talent trust ' + r.trust + '; ' + r.payVote.text + '; matched real company ' + r.matches + ' of ' + r.compared + '.' +
+    (r.lines.length ? ' ' + r.lines.join(' ') : '');
+}
+
+// ---------- screens ----------
+function titleScreen() {
+  return '<section class="screen title" tabindex="-1">' +
+    '<div class="hero scene-wrap">' + sceneHTML('lot', { label: 'The studio lot, Burbank' }) +
+    '<div class="hero-text"><h1 class="logo">WRITE-OFF</h1></div></div>' +
+    '<p class="tagline">An Oregon Trail through Los Angeles.</p>' +
+    '<div class="stack">' +
+    '<button class="btn primary" data-action="to-setup">Start</button>' +
+    '<button class="btn" data-action="to-sources">Sources</button>' +
+    '<button class="btn" data-action="to-about">About</button>' +
+    '</div>' +
+    '<p class="foot">MNGT 301 &middot; team durKheim &middot; University of Nebraska-Lincoln</p>' +
+    '</section>';
+}
+
+function setupScreen() {
+  const d = state.draft;
+  return '<section class="screen setup" tabindex="-1">' +
+    '<h2 class="h">Who is driving?</h2>' +
+    '<label class="field"><span class="lbl">Your name</span><input data-field="name" type="text" maxlength="24" autocomplete="off" autocapitalize="words" placeholder="Exec" value="' + esc(d.name) + '"></label>' +
+    '<label class="field"><span class="lbl">Name your studio</span><input data-field="studio" type="text" maxlength="32" autocomplete="off" autocapitalize="words" placeholder="Burbank Pictures" value="' + esc(d.studio) + '"></label>' +
+    '<div class="lbl">Pace</div>' +
+    '<div class="stack pace" role="radiogroup" aria-label="Pace">' +
+    PACES.map(p => '<button class="pace-btn' + (state.pace === p.id ? ' on' : '') + '" role="radio" aria-checked="' + (state.pace === p.id) + '" data-action="pace" data-pace="' + esc(p.id) + '"><span class="box" aria-hidden="true"></span><span class="pname">' + esc(p.name) + '</span><span class="ptext">' + esc(p.text) + '</span></button>').join('') +
+    '</div>' +
+    '<button class="btn primary" data-action="begin">Hit the road</button>' +
+    '</section>';
+}
+
+function statusBar() {
+  return '<footer class="status" aria-label="Status">' +
+    '<div class="cell"><span class="k">Cash</span><span class="v' + (state.cash < 0 ? ' neg' : '') + '">' + money(state.cash) + '</span></div>' +
+    '<div class="cell"><span class="k">Debt</span><span class="v">' + debtFmt(state.debt) + '</span><span class="sub">target ' + debtFmt(state.debtTarget) + '</span></div>' +
+    '<div class="cell"><span class="k">Your bonus</span><span class="v">' + Math.round(state.bonus) + '%</span></div>' +
+    '<div class="cell"><span class="k">Crew working</span><span class="v">' + num(state.crew) + '</span></div>' +
+    '<button class="src" data-action="to-sources">Sources</button>' +
+    '</footer>';
+}
+
+function travelScreen() {
+  const stop = STOPS[state.stopIndex];
+  const t = state.travel;
+  const driving = t.phase === 'driving' && !reducedMotion();
+  return '<section class="screen travel" tabindex="-1">' +
+    '<div class="scene-wrap' + (driving ? ' travelling' : '') + '">' + sceneHTML(stop.scene, { label: stop.stop, car: true }) + '</div>' +
+    '<div class="travel-info">' +
+    '<div class="month">' + esc(stop.monthName) + '</div>' +
+    '<div class="dest">' + esc(stop.stop) + '</div>' +
+    t.notes.map(n => '<p class="note ' + esc(n.kind) + '">' + esc(n.text) + '</p>').join('') +
+    (t.phase === 'wait' ? '<button class="btn primary" data-action="arrive" data-autofocus>Drive on</button>' : '') +
+    '</div>' +
+    (t.phase === 'event' ? eventOverlay() : '') +
+    statusBar() +
+    '</section>';
+}
+
+function stopScreen() {
+  const stop = STOPS[state.stopIndex];
+  const view = stopView(stop);
+  return '<section class="screen stop" tabindex="-1">' +
+    '<div class="scene-wrap">' + sceneHTML(stop.scene, { label: stop.stop, car: true }) + '</div>' +
+    '<div class="where">' + esc(stop.monthName) + ' &middot; ' + esc(stop.stop) + '</div>' +
+    '<h2 class="h">' + esc(stop.title) + '</h2>' +
+    '<p class="setup-text">' + esc(view.setup) + '</p>' +
+    '<div class="choices">' +
+    view.choices.map((c, i) => {
+      const eff = effectsFor(c);
+      const dis = disabledReason(c);
+      return '<button class="choice' + (dis ? ' off' : '') + '" data-action="choose" data-choice="' + esc(c.id) + '"' + (dis ? ' aria-disabled="true"' : '') + '>' +
+        '<span class="n" aria-hidden="true">' + (i + 1) + '</span>' +
+        '<span class="label">' + esc(c.label) + '</span>' +
+        '<span class="hint">' + esc(dis || hintFor(c, eff)) + '</span></button>';
+    }).join('') +
+    '</div>' +
+    statusBar() +
+    '</section>';
+}
+
+function shelvedOverlay() {
+  const l = state.last;
+  const name = projectName(l.choice.kills);
+  return '<button class="shelved" data-action="continue" data-autofocus aria-label="' + esc(name) + ' has been shelved. Cause: impairment. Crew sent home: ' + num(-l.eff.crew) + '. Tap to continue.">' +
+    '<span class="stone" aria-hidden="true">' + tombstoneSVG() + '</span>' +
+    '<span class="line1">' + esc(name) + '<br>has been shelved.</span>' +
+    '<span class="line2">Cause: impairment.</span>' +
+    '<span class="line3">Crew sent home: ' + num(-l.eff.crew) + '.</span>' +
+    '<span class="tap">Tap to continue</span>' +
+    '</button>';
+}
+
+function cardOverlay() {
+  const l = state.last;
+  const c = l.stop.card;
+  const src = c.source || {};
+  return '<div class="overlay" role="dialog" aria-modal="true" aria-label="What actually happened" tabindex="-1" data-autofocus><div class="card">' +
+    '<div class="cl you"><span class="cl-k">You</span><span class="cl-v">' + esc(l.youLine) + '</span></div>' +
+    '<div class="cl"><span class="cl-k">What actually happened</span><span class="cl-v">' + esc(c.did) + '</span></div>' +
+    '<div class="cl"><span class="cl-k">What happened next</span><span class="cl-v">' + esc(c.next) + '</span></div>' +
+    '<div class="tags"><span class="driver">' + esc(c.driver) + '</span><span class="chip">' + esc(c.chip) + '</span></div>' +
+    (src.url ? '<a class="source" href="' + esc(src.url) + '" target="_blank" rel="noopener">' + esc(src.outlet) + ', ' + esc(src.date) + '</a>' : '') +
+    '<button class="btn primary" data-action="driveon">Drive on.</button>' +
+    '</div></div>';
+}
+
+function receiptScreen() {
+  const r = state.receipt;
+  const rule = ruleById(r.rule);
+  const allShelved = r.sold.concat(r.shelved);
+  return '<section class="screen receipt-screen" tabindex="-1">' +
+    '<div class="paper">' +
+    '<div class="paper-head"><div class="ph1">' + esc(state.player.studio) + '</div><div class="ph2">Receipt &middot; Round ' + (r.round === 1 ? 'one' : 'two') + (rule ? ' &middot; ' + esc(rule.name) : '') + '</div></div>' +
+    '<div class="row"><span>Debt</span><span>' + debtFmt(r.debt) + ' vs. ' + debtFmt(r.target) + ' target. ' + (r.hit ? 'Hit.' : 'Missed.') + '</span></div>' +
+    '<div class="row"><span>Bonus</span><span>' + Math.round(r.bonus) + '% of target, ' + money1(r.bonusDollars) + '</span></div>' +
+    '<div class="row"><span>Projects shelved</span><span>' + allShelved.length + (r.sold.length ? ' (' + r.sold.length + ' sold back later)' : '') + '</span></div>' +
+    (allShelved.length ? '<div class="rnames">' + allShelved.map(id => esc(projectName(id))).join(', ') + '</div>' : '') +
+    '<div class="row"><span>Crew sent home</span><span>' + num(r.sentHome) + '</span></div>' +
+    '<div class="row"><span>Talent trust</span><span>' + esc(r.trust) + '</span></div>' +
+    '<div class="row"><span>Pay vote</span><span>' + esc(r.payVote.text) + '</span></div>' +
+    r.lines.map(l => '<p class="rline">' + esc(l) + '</p>').join('') +
+    '<div class="cmp-head">You vs. the real company</div>' +
+    r.rows.map(row => '<div class="cmp' + (row.match ? ' match' : '') + '"><div class="t">' + esc(row.month) + ' &middot; ' + esc(row.title) + '</div><div class="you"><b>You:</b> ' + esc(row.yours) + '</div><div class="real"><b>Real:</b> ' + esc(row.real) + '</div></div>').join('') +
+    '<div class="row total"><span>Matched the real company</span><span>' + r.matches + ' of ' + r.compared + '</span></div>' +
+    '</div>' +
+    '<div class="stack">' +
+    (r.round === 1
+      ? '<button class="btn primary" data-action="to-rules">Play round two</button>'
+      : '<button class="btn primary" data-action="to-exit">Next</button>') +
+    '</div>' +
+    '</section>';
+}
+
+function rulesScreen() {
+  return '<section class="screen rules" tabindex="-1">' +
+    '<h2 class="h" style="margin-top:24px">Round two. Change one rule.</h2>' +
+    '<p class="lead">Same year, same studio, same debt. Pick the rule that changes before you drive it again.</p>' +
+    '<div class="stack">' +
+    RULE_CARDS.map(rc => '<button class="rule-card' + (rc.available ? '' : ' off') + '" data-action="pick-rule" data-rule="' + esc(rc.id) + '"' + (rc.available ? '' : ' aria-disabled="true"') + '>' +
+      '<span class="rname">' + esc(rc.name) + (rc.available ? '' : '<span class="soon">Coming soon</span>') + '</span>' +
+      '<span class="rtext">' + esc(rc.text) + '</span></button>').join('') +
+    '</div></section>';
+}
+
+function exitScreen() {
+  return '<section class="screen exit" tabindex="-1">' +
+    '<h2 class="h" style="margin-top:24px">Two questions before you go.</h2>' +
+    '<p class="lead">Your answers go in the log. Skip if you want.</p>' +
+    '<label class="lbl" for="q-hardest">Which decision was hardest?</label>' +
+    '<textarea class="ans" id="q-hardest" data-field="hardest" maxlength="500">' + esc(state.exit.hardest) + '</textarea>' +
+    '<label class="lbl" for="q-rule">Which rule would you change in real life?</label>' +
+    '<textarea class="ans" id="q-rule" data-field="rule" maxlength="500">' + esc(state.exit.rule) + '</textarea>' +
+    '<div class="stack"><button class="btn primary" data-action="exit-save">Save answers</button><button class="btn quiet" data-action="exit-skip">Skip</button></div>' +
+    '</section>';
+}
+
+function finalScreen() {
+  const a = state.results[1], b = state.results[2];
+  const rule = b ? ruleById(b.rule) : null;
+  const cell = (label, v) => '<div class="fc"><small>' + esc(label) + '</small>' + v + '</div>';
+  return '<section class="screen final" tabindex="-1">' +
+    '<h2 class="h" style="margin-top:24px">Same year. One rule changed.</h2>' +
+    (a && b ? '<div class="final-cmp">' +
+      '<div class="fc-h">Round one</div><div class="fc-h">Round two' + (rule ? ': ' + esc(rule.name) : '') + '</div>' +
+      cell('December', esc(a.december)) + cell('December', esc(b.december)) +
+      cell('Bonus', Math.round(a.bonus) + '% (' + money1(a.bonusDollars) + ')') + cell('Bonus', Math.round(b.bonus) + '% (' + money1(b.bonusDollars) + ')') +
+      cell('Debt target', (a.hit ? 'Hit' : 'Missed') + ' (' + debtFmt(a.debt) + ')') + cell('Debt target', (b.hit ? 'Hit' : 'Missed') + ' (' + debtFmt(b.debt) + ')') +
+      cell('Shelved', String(a.shelved.length + a.sold.length)) + cell('Shelved', String(b.shelved.length + b.sold.length)) +
+      cell('Crew sent home', num(a.sentHome)) + cell('Crew sent home', num(b.sentHome)) +
+      cell('Talent trust', esc(a.trust)) + cell('Talent trust', esc(b.trust)) +
+      '</div>' : '') +
+    '<p class="lead">The log has every stop, every choice, and every source. Download it for the write-up.</p>' +
+    '<div class="stack">' +
+    '<button class="btn primary" data-action="download">Download the log</button>' +
+    '<button class="btn" data-action="copy">Copy log</button>' +
+    '<button class="btn quiet" data-action="to-title">Play again</button>' +
+    '</div><div class="toast" id="toast" aria-live="polite"></div>' +
+    '<p class="foot">MNGT 301 &middot; team durKheim &middot; University of Nebraska-Lincoln</p>' +
+    '</section>';
+}
+
+function sourcesScreen() {
+  const items = STOPS.filter(s => s.card && s.card.source).map(s => s.card.source);
+  return '<section class="screen sources" tabindex="-1">' +
+    '<h2 class="h" style="margin-top:24px">Sources</h2>' +
+    '<p class="lead">Every card in the game cites one of these.</p>' +
+    '<ul class="src-list">' +
+    items.map(src => '<li><span class="outlet">' + esc(src.outlet) + '</span><a href="' + esc(src.url) + '" target="_blank" rel="noopener">' + esc(src.title) + '</a> <span class="date">(' + esc(src.date) + ')</span></li>').join('') +
+    '</ul>' +
+    '<div class="stack"><button class="btn" data-action="back">Back</button></div>' +
+    '</section>';
+}
+
+function aboutScreen() {
+  return '<section class="screen about" tabindex="-1">' +
+    '<h2 class="h" style="margin-top:24px">About</h2>' +
+    '<p class="lead">' + esc(DATA.about || '') + '</p>' +
+    '<div class="stack"><button class="btn" data-action="back">Back</button></div>' +
+    '</section>';
+}
+
+function eventOverlay() { return ''; }
+
+// ---------- render ----------
+function render() {
+  clearTimeout(timer);
+  const s = state.screen;
+  let html = '';
+  switch (s) {
+    case 'title': html = titleScreen(); break;
+    case 'setup': html = setupScreen(); break;
+    case 'travel': html = travelScreen(); break;
+    case 'stop': html = stopScreen(); break;
+    case 'shelved': html = stopScreen() + shelvedOverlay(); break;
+    case 'card': html = stopScreen() + cardOverlay(); break;
+    case 'receipt': html = receiptScreen(); break;
+    case 'rules': html = rulesScreen(); break;
+    case 'exit': html = exitScreen(); break;
+    case 'final': html = finalScreen(); break;
+    case 'sources': html = sourcesScreen(); break;
+    case 'about': html = aboutScreen(); break;
+    default: html = titleScreen();
+  }
+  app.innerHTML = html;
+  const key = s + ':' + state.stopIndex + ':' + state.round;
+  const baseKey = (s === 'card' || s === 'shelved' ? 'stop' : s) + ':' + state.stopIndex + ':' + state.round;
+  if (baseKey !== lastKey) window.scrollTo(0, 0);
+  lastKey = baseKey;
+  const focusEl = app.querySelector('[data-autofocus]') || app.querySelector('.screen');
+  if (focusEl && typeof focusEl.focus === 'function') { try { focusEl.focus({ preventScroll: true }); } catch (e) { focusEl.focus(); } }
+  if (s === 'travel' && state.travel && state.travel.phase === 'driving') {
+    timer = setTimeout(afterDrive, reducedMotion() ? 0 : 1700);
+  }
+  void key;
+}
+
+// ---------- actions ----------
+function handle(action, el) {
+  switch (action) {
+    case 'to-setup': state.screen = 'setup'; break;
+    case 'to-title': newGame(); break;
+    case 'to-sources': state.from = state.screen; state.screen = 'sources'; break;
+    case 'to-about': state.from = state.screen; state.screen = 'about'; break;
+    case 'back': state.screen = state.from || 'title'; state.from = null; break;
+    case 'pace': state.pace = el.dataset.pace; break;
+    case 'begin':
+      state.player.name = (state.draft.name || '').trim() || 'Exec';
+      state.player.studio = (state.draft.studio || '').trim() || 'Burbank Pictures';
+      resetRound(1, null);
+      addLog({ type: 'start', text: state.player.name + ' takes over ' + state.player.studio + '. Pace: ' + state.pace + '. Debt target ' + debtFmt(state.debtTarget) + '.' });
+      travelTo(0);
+      return;
+    case 'arrive': arrive(); return;
+    case 'choose': choose(el.dataset.choice); return;
+    case 'continue': state.screen = 'card'; break;
+    case 'driveon': travelTo(state.stopIndex + 1); return;
+    case 'to-rules': state.screen = 'rules'; break;
+    case 'pick-rule': {
+      const rc = ruleById(el.dataset.rule);
+      if (!rc || !rc.available) return;
+      resetRound(2, rc.id);
+      addLog({ type: 'start', text: 'Round two with the rule: ' + rc.name + '. ' + rc.text });
+      travelTo(0);
+      return;
+    }
+    case 'to-exit': state.screen = 'exit'; break;
+    case 'exit-save':
+      addLog({ type: 'exit', text: 'Hardest decision: ' + (state.exit.hardest || '(blank)') + ' | Rule to change in real life: ' + (state.exit.rule || '(blank)') });
+      state.screen = 'final'; break;
+    case 'exit-skip': addLog({ type: 'exit', text: 'Exit questions skipped.' }); state.screen = 'final'; break;
+    case 'download': downloadLog(); return;
+    case 'copy': copyLog(); return;
+    default: return;
+  }
+  render();
+}
+
+function logText() {
+  const head = 'Write-Off log | ' + state.player.studio + ' | ' + state.player.name + ' | ' + new Date().toISOString().slice(0, 10);
+  const lines = state.log.map(e => {
+    const parts = [e.t, 'R' + e.round, 'rule: ' + e.rule, e.month || '-', e.stop || '-'];
+    if (e.type === 'choice') parts.push('choice: ' + e.choice + (typeof e.bonusDelta === 'number' ? ' (bonus ' + (e.bonusDelta >= 0 ? '+' : '') + e.bonusDelta + ')' : ''));
+    if (e.event) parts.push('event: ' + e.event);
+    if (e.text) parts.push(e.text);
+    parts.push('cash ' + e.effects.cash + ' / debt ' + e.effects.debt + ' / bonus ' + e.effects.bonus + ' / crew ' + e.effects.crew);
+    if (e.card) parts.push('real: ' + e.card.did, 'next: ' + e.card.next, 'source: ' + e.card.source.outlet + ' (' + e.card.source.date + ') ' + e.card.source.url);
+    return parts.join(' | ');
+  });
+  return [head].concat(lines).join('\n') + '\n';
+}
+function logFileName() {
+  const slug = (state.player.studio || 'studio').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'studio';
+  return 'writeoff-log-' + slug + '-' + new Date().toISOString().slice(0, 10) + '.txt';
+}
+function toast(msg) { const t = document.getElementById('toast'); if (t) t.textContent = msg; }
+function downloadLog() {
+  try {
+    const blob = new Blob([logText()], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = logFileName();
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+    toast('Saved ' + logFileName());
+  } catch (e) { toast('Download blocked here. Try Copy log.'); }
+}
+function copyLog() {
+  const text = logText();
+  const done = () => toast('Log copied to the clipboard.');
+  const fail = () => toast('Copy blocked here. Try Download.');
+  if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(text).then(done, fail); return; }
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.left = '-9999px';
+    document.body.appendChild(ta); ta.select();
+    const ok = document.execCommand('copy'); ta.remove();
+    ok ? done() : fail();
+  } catch (e) { fail(); }
+}
+
+app.addEventListener('click', e => {
+  const el = e.target.closest('[data-action]');
+  if (!el || !app.contains(el)) return;
+  if (el.getAttribute('aria-disabled') === 'true') return;
+  handle(el.dataset.action, el);
+});
+app.addEventListener('input', e => {
+  const f = e.target && e.target.dataset ? e.target.dataset.field : null;
+  if (!f || !state) return;
+  if (state.screen === 'setup') state.draft[f] = e.target.value;
+  if (state.screen === 'exit') state.exit[f] = e.target.value;
+});
+document.addEventListener('keydown', e => {
+  if (!state || state.screen !== 'stop' || e.metaKey || e.ctrlKey || e.altKey) return;
+  if (!/^[1-9]$/.test(e.key)) return;
+  const b = app.querySelectorAll('.choice')[Number(e.key) - 1];
+  if (b && b.getAttribute('aria-disabled') !== 'true') b.click();
+});
+
+newGame();
+render();
+
+window.WRITEOFF = { get state() { return state; }, render, travelTo, choose, stopView, effectsFor, bonusDeltaFor, newGame };
+})();
+</script>
+</body>
+</html>
