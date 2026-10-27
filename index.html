@@ -62,6 +62,7 @@
   .scene-wrap svg { display: block; width: 100%; height: 100%; image-rendering: pixelated; image-rendering: crisp-edges; }
   .scene-wrap::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(27,27,31,0) 0 3px, rgba(27,27,31,.16) 3px 4px); }
   .scene-wrap .car { transform: translateX(272px); }
+  .scene-wrap .blink { animation: blink 1.2s steps(2) infinite; }
   .scene-wrap.travelling .car { animation: drive 1.2s linear forwards; }
   .scene-wrap.travelling .far { animation: slide-far 1.2s linear forwards; }
   .scene-wrap.travelling .mid { animation: slide-mid 1.2s linear forwards; }
@@ -76,7 +77,7 @@
 
   /* Title */
   .hero { margin-bottom: 0; }
-  .hero-text { position: absolute; left: 0; right: 0; bottom: 14%; text-align: center; pointer-events: none; }
+  .hero-text { position: absolute; left: 0; right: 0; top: 9%; text-align: center; pointer-events: none; }
   .logo { font-size: clamp(30px, 9vw, 60px); color: var(--white); line-height: 1; text-shadow: 4px 4px 0 var(--red), 8px 8px 0 var(--ink); letter-spacing: 2px; }
   .tagline { font-size: 26px; text-align: center; margin: 20px 0 6px; color: var(--sand); }
   .foot { font-family: var(--pixel); font-size: 8px; color: var(--asphalt); text-align: center; line-height: 1.8; margin-top: auto; padding-top: 24px; }
@@ -97,14 +98,14 @@
 
   /* Travel */
   .travel-info { text-align: center; padding: 20px 0 8px; flex: 1; }
-  .travel .month { font-family: var(--pixel); font-size: 22px; color: var(--gold); line-height: 1.4; text-transform: uppercase; animation: pop .5s steps(4) both; }
+  .travel .month { font-family: var(--pixel); font-size: 22px; color: var(--gold); line-height: 1.4; text-transform: uppercase; animation: pop .4s steps(3) both; }
   .travel .dest { font-size: 24px; color: var(--sand); margin-top: 6px; }
   .note { font-size: 23px; line-height: 1.15; margin: 16px auto 0; max-width: 560px; }
   .note.tomb { color: var(--concrete); }
   .note.tomb::before { content: "\271D  "; }
   .note.note { color: var(--sun); }
   .travel-info .btn { max-width: 360px; margin: 22px auto 0; }
-  @keyframes pop { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  @keyframes pop { from { transform: translateY(8px); } to { transform: none; } }
 
   /* Stop */
   .where { font-family: var(--pixel); font-size: 9px; color: var(--gold); text-transform: uppercase; letter-spacing: .5px; margin: 18px 0 8px; line-height: 1.6; }
