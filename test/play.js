@@ -15,6 +15,7 @@ const STRATEGY_R1 = process.env.R1 || 'real';      // real | shelve | release | 
 const STRATEGY_R2 = process.env.R2 || 'release';
 const RULE = process.env.RULE || 'threeYear';
 const WIDTH = Number(process.env.WIDTH || 390);
+const HEIGHT = Number(process.env.HEIGHT || 844);
 const URL = 'file://' + path.join(ROOT, 'index.html');
 
 fs.mkdirSync(OUT, { recursive: true });
@@ -32,7 +33,7 @@ async function overflow(page) {
 async function main() {
   const browser = await chromium.launch({ proxy: process.env.HTTPS_PROXY ? { server: process.env.HTTPS_PROXY } : undefined });
   const ctx = await browser.newContext({
-    viewport: { width: WIDTH, height: 844 }, deviceScaleFactor: 2, ignoreHTTPSErrors: true,
+    viewport: { width: WIDTH, height: HEIGHT }, deviceScaleFactor: 2, ignoreHTTPSErrors: true,
     reducedMotion: FAST ? 'reduce' : 'no-preference', acceptDownloads: true
   });
   const page = await ctx.newPage();
