@@ -70,8 +70,14 @@ async function main() {
       if (s.screen === 'receipt') return;
       if (s.screen === 'travel') {
         if (!FAST && s.stopIndex === 2) await shot(page, tag + '-travel');
-        if (s.phase === 'wait') { await shot(page, tag + '-travel-note-' + s.stopIndex); await page.click('[data-action=arrive]'); }
+        if (s.phase === 'wait') {
+          const notes = await page.$$eval('.note', ns => ns.map(n => n.textContent));
+          console.log(tag, 'travel notes at stop', s.stopIndex + ':', notes.join(' | '));
+          await shot(page, tag + '-travel-note-' + s.stopIndex); await page.click('[data-action=arrive]');
+        }
         else if (s.phase === 'event') {
+          const evText = await page.$eval('.evbox .ev-t', n => n.textContent).catch(() => '?');
+          console.log(tag, 'event at stop', s.stopIndex + ':', evText);
           await shot(page, tag + '-event-' + s.stopIndex);
           const btn = await page.$('[data-action=event-choice], [data-action=event-ok], [data-action=event-done]');
           if (btn) await btn.click(); else await page.waitForTimeout(100);
@@ -97,6 +103,7 @@ async function main() {
         const nonShelver = info.choices.find(c => !c.shelves && enabled.includes(c.id));
         if (strategy === 'real' && enabled.includes(info.real)) pick = info.real;
         else if (strategy === 'shelve' && shelver) pick = shelver.id;
+        else if (strategy === 'shelve' && info.id === 'buyer' && enabled.includes('refuse')) pick = 'refuse';
         else if (strategy === 'release' && nonShelver) pick = nonShelver.id;
         else if (strategy === 'random') pick = enabled[Math.floor(Math.random() * enabled.length)];
         if (info.id === 'animated') console.log(tag, 'December hints:', info.buttons.map(b => b.id + ' => ' + b.hint + (b.off ? ' [off]' : '')).join(' || '));
@@ -148,6 +155,8 @@ async function main() {
       console.log('LOG FILE:', download.suggestedFilename(), txt.split('\n').length, 'lines');
       console.log(txt.split('\n').slice(0, 6).join('\n'));
     } else errors.push('download did not fire');
+    const tombs = await page.evaluate(() => { try { return JSON.parse(localStorage.getItem('writeoff.tombstones') || '[]').length; } catch (e) { return -1; } });
+    console.log('tombstones stored on this device:', tombs);
     const flip = await page.evaluate(() => (typeof window.checkFlip === 'function') ? (function () { const out = []; const orig = console.log; console.log = (...a) => out.push(a.join(' ')); let res; try { res = window.checkFlip(); } finally { console.log = orig; } return { res, out }; })() : null);
     if (flip) { console.log('checkFlip ->', flip.res); console.log(flip.out.join('\n')); if (flip.res === false) errors.push('checkFlip FAIL'); }
   } else {

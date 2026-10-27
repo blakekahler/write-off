@@ -149,6 +149,12 @@
   .source { display: inline-block; font-size: 20px; color: var(--glass); margin-bottom: 16px; }
   .source::after { content: " \2197"; }
 
+  /* Random events */
+  .evbox { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); width: calc(100% - var(--gl) - var(--gr)); max-width: 520px; background: var(--ink); border: 3px solid var(--white); box-shadow: 6px 6px 0 var(--asphalt); padding: 18px 18px 16px; z-index: 25; animation: pop .25s steps(3) both; }
+  .evbox .ev-k { font-family: var(--pixel); font-size: 8px; color: var(--gold); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px; line-height: 1.6; }
+  .evbox .ev-t { font-size: 24px; line-height: 1.12; margin-bottom: 16px; }
+  .evbox .stack { margin: 0; }
+
   /* Shelved */
   .shelved { position: fixed; inset: 0; z-index: 30; width: 100%; background: var(--black); color: var(--white); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; font-family: var(--pixel); font-size: 12px; line-height: 2; padding: 24px var(--gr) 24px var(--gl); }
   .shelved .stone { display: block; width: 120px; margin-bottom: 20px; }
@@ -367,6 +373,7 @@ function choose(choiceId) {
   if (choice.shelves && choice.kills) {
     state.shelved.push(choice.kills);
     if (state.rule === 'rightsRevert') state.reverts.push(choice.kills);
+    saveTomb({ name: state.player.name, round: state.round, stopId: stop.id, choiceId: choice.id, project: choice.kills, t: new Date().toISOString() });
   }
   if (choice.unshelves && state.shelved.length) {
     sold = state.shelved.slice();
@@ -398,19 +405,93 @@ function travelTo(i) {
     if (typeof stop.onArrive.buyers === 'number') state.buyers = Math.max(0, state.buyers + stop.onArrive.buyers);
     if (stop.onArrive.note) notes.push({ kind: 'note', text: stop.onArrive.note });
   }
-  state.travel = { notes, event: null, phase: 'driving', outcome: null };
-  addLog({ type: 'travel', text: 'Drove to ' + stop.stop + '.' });
+  const tomb = tombstoneFor(stop);
+  if (tomb) notes.push({ kind: 'tomb', text: tomb });
+  const ev = drawEvent();
+  state.travel = { notes, event: ev, phase: 'driving', outcome: null };
+  addLog({ type: 'travel', text: 'Drove to ' + stop.stop + '.' + (tomb ? ' ' + tomb : '') });
   if (reducedMotion() && !state.travel.event && !notes.length) { arrive(); return; }
   state.screen = 'travel';
   render();
 }
 function afterDrive() {
   const t = state.travel;
-  if (t.event) { t.phase = 'event'; render(); }
+  if (t.event) { presentEvent(); }
   else if (t.notes.length) { t.phase = 'wait'; render(); }
   else arrive();
 }
 function arrive() { clearTimeout(timer); state.screen = 'stop'; render(); }
+
+// ---------- random events ----------
+const EVENTS = DATA.events || [];
+function evalWhen(when) {
+  try {
+    const fn = new Function('shelved', 'month', 'buyers', 'goodwill', 'cash', 'bonus', 'crew', 'debt', 'round', 'return (' + (when || 'true') + ');');
+    return !!fn(state.shelved, state.month, state.buyers, state.goodwill, state.cash, state.bonus, state.crew, state.debt, state.round);
+  } catch (e) { return false; }
+}
+function drawEvent() {
+  if (state.pendingEvent) {
+    const forced = EVENTS.find(e => e.id === state.pendingEvent);
+    state.pendingEvent = null;
+    if (forced && state.fired.indexOf(forced.id) < 0) { state.fired.push(forced.id); return forced; }
+  }
+  if (Math.random() >= 0.5) return null;
+  const pool = EVENTS.filter(e => e.id !== 'bankers' && state.fired.indexOf(e.id) < 0 && evalWhen(e.when));
+  if (!pool.length) return null;
+  const ev = pool[Math.floor(Math.random() * pool.length)];
+  state.fired.push(ev.id);
+  return ev;
+}
+function applyEventEffects(e) {
+  if (typeof e.cash === 'number') state.cash += e.cash;
+  if (typeof e.goodwill === 'number') state.goodwill = clamp(state.goodwill + e.goodwill, 0, 100);
+  if (typeof e.buyers === 'number') state.buyers = Math.max(0, state.buyers + e.buyers);
+  if (typeof e.bonus === 'number') state.bonus = clamp(state.bonus + e.bonus, 0, 200);
+  if (state.cash < 0 && state.fired.indexOf('bankers') < 0) state.pendingEvent = 'bankers';
+}
+function presentEvent() {
+  const ev = state.travel.event;
+  if (!ev.choices) { applyEventEffects(ev); addLog({ type: 'event', event: ev.text }); }
+  state.travel.phase = 'event';
+  render();
+}
+function resolveEventChoice(i) {
+  const ev = state.travel.event;
+  const ch = ev && ev.choices ? ev.choices[i] : null;
+  if (!ch || state.travel.outcome) return;
+  const r = Math.random();
+  let acc = 0, out = ch.outcomes[ch.outcomes.length - 1];
+  for (let k = 0; k < ch.outcomes.length; k++) { acc += ch.outcomes[k].chance || 0; if (r < acc) { out = ch.outcomes[k]; break; } }
+  applyEventEffects(out);
+  state.travel.outcome = { text: out.text };
+  addLog({ type: 'event', event: ev.text + ' ' + ch.label + ' ' + out.text });
+  render();
+}
+
+// ---------- tombstones (earlier runs on this device) ----------
+const TOMB_KEY = 'writeoff.tombstones';
+function loadTombs() {
+  try { const v = JSON.parse(window.localStorage.getItem(TOMB_KEY) || '[]'); return Array.isArray(v) ? v : []; } catch (e) { return []; }
+}
+function saveTomb(entry) {
+  try {
+    const list = loadTombs();
+    list.push(entry);
+    while (list.length > 50) list.shift();
+    window.localStorage.setItem(TOMB_KEY, JSON.stringify(list));
+  } catch (e) { /* no storage, no tombstones */ }
+}
+function tombstoneFor(stop) {
+  const kills = allChoices(stop).filter(c => c.shelves && c.kills).map(c => c.kills);
+  if (!kills.length) return null;
+  const list = loadTombs().filter(t => t && (t.stopId === stop.id || kills.indexOf(t.project) >= 0));
+  if (!list.length) return null;
+  const t = list[list.length - 1];
+  const others = list.length - 1;
+  return 'Here lies ' + projectName(t.project || kills[0]) + '. Shelved by ' + (t.name || 'Exec') + ', Round ' + (t.round || 1) +
+    (others > 0 ? ', and ' + others + ' other' + (others > 1 ? 's' : '') + '.' : '.');
+}
 
 function finishRound() {
   const lines = [];
@@ -649,7 +730,21 @@ function aboutScreen() {
     '</section>';
 }
 
-function eventOverlay() { return ''; }
+function eventOverlay() {
+  const t = state.travel;
+  const ev = t.event;
+  if (!ev) return '';
+  let body;
+  if (t.outcome) {
+    body = '<div class="ev-t">' + esc(t.outcome.text) + '</div><div class="stack"><button class="btn primary" data-action="event-done">Drive on</button></div>';
+  } else if (ev.choices) {
+    body = '<div class="ev-t">' + esc(ev.text) + '</div><div class="stack">' +
+      ev.choices.map((c, i) => '<button class="btn" data-action="event-choice" data-index="' + i + '">' + esc(c.label) + '</button>').join('') + '</div>';
+  } else {
+    body = '<div class="ev-t">' + esc(ev.text) + '</div><div class="stack"><button class="btn primary" data-action="event-ok">Drive on</button></div>';
+  }
+  return '<div class="evbox" role="dialog" aria-modal="true" aria-label="On the road" tabindex="-1" data-autofocus><div class="ev-k">On the road</div>' + body + '</div>';
+}
 
 // ---------- render ----------
 function render() {
@@ -718,6 +813,8 @@ function handle(action, el) {
       addLog({ type: 'exit', text: 'Hardest decision: ' + (state.exit.hardest || '(blank)') + ' | Rule to change in real life: ' + (state.exit.rule || '(blank)') });
       state.screen = 'final'; break;
     case 'exit-skip': addLog({ type: 'exit', text: 'Exit questions skipped.' }); state.screen = 'final'; break;
+    case 'event-ok': case 'event-done': arrive(); return;
+    case 'event-choice': resolveEventChoice(Number(el.dataset.index)); return;
     case 'download': downloadLog(); return;
     case 'copy': copyLog(); return;
     default: return;
