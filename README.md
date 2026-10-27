@@ -4,7 +4,7 @@ An Oregon Trail style game about why studios shelve finished movies. MNGT 301 se
 
 ## Play it
 
-Open `index.html` in any browser, or visit the GitHub Pages URL once it's deployed. Works on phones. Number keys 1 to 3 pick choices on a keyboard.
+Live at https://blakekahler.github.io/write-off/ (GitHub Pages). Or open `index.html` in any browser. Works on phones. Number keys 1 to 3 pick choices on a keyboard.
 
 ## What's in here
 
@@ -28,18 +28,9 @@ Writers only edit `scenarios.js`. Each stop has a three-sentence `setup`, three 
 
 The game is four static files at the repo root (`index.html`, `scenarios.js`, `scenes.js`, `rules.js`). All script tags are relative paths, so the same files work opened from a folder on your laptop and served from GitHub Pages.
 
-1. Create an empty repo on GitHub called `write-off` (public, no README).
-2. From this folder:
+The repo is https://github.com/blakekahler/write-off and Pages serves `main` from the root, so every `git push origin main` redeploys the site at https://blakekahler.github.io/write-off/ within a minute or two. That link is what we submit to Canvas.
 
-   ```
-   git remote add origin https://github.com/<user>/write-off.git
-   git push -u origin main
-   ```
-
-3. On GitHub: Settings > Pages > Build and deployment > Source: Deploy from a branch > Branch: `main`, folder `/ (root)` > Save.
-4. Wait a minute or two, then open `https://<user>.github.io/write-off/` on your phone. That link is what we submit to Canvas.
-
-Every later `git push` to `main` redeploys automatically.
+If Pages ever needs to be set up again: Settings > Pages > Build and deployment > Source: Deploy from a branch > Branch `main`, folder `/ (root)` > Save.
 
 ## Testing
 
