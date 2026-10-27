@@ -35,8 +35,8 @@ window.WRITEOFF_RULES = (function () {
       case 'threeYear':
         return 'This year: ' + ty + '. Over three years: ' + money(eff.threeYear, true) + '.';
       case 'writeOffsCount':
-        if (eff.writeOff > 0) return ty + ' this year, minus a ' + money(eff.writeOff) + ' write-off counted against your bonus.';
-        if (eff.writeOff < 0) return ty + ' this year, plus the ' + money(-eff.writeOff) + ' write-off you give back.';
+        if (eff.writeOff > 0) return ty + ' this year, but the ' + money(eff.writeOff) + ' write-off counts against your bonus.';
+        if (eff.writeOff < 0) return ty + ' this year, and the ' + money(-eff.writeOff) + ' write-off you give back counts for your bonus.';
         return 'Finance says: ' + ty + ' this year. No write-off.';
       case 'rightsRevert':
         if (choice && choice.shelves) return ty + ' this year, but ' + (NOUN[choice.kills] || 'it') + ' goes back to its creators in 12 months.';
@@ -64,7 +64,7 @@ window.WRITEOFF_RULES = (function () {
       bonus: -12 * state.reverts.length,
       goodwill: -5 * state.reverts.length,
       lines: state.reverts.map(function (id) {
-        return 'Rights to ' + projectName(id) + ' reverted. A rival released it and made $120M.';
+        return projectName(id) + ' went back to its creators. A rival released it and made $120M.';
       })
     };
   }

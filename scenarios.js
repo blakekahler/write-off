@@ -17,14 +17,14 @@ window.WRITEOFF_DATA = {
     {
       id: "dayone", month: 0, monthName: "April", stop: "The studio lot, Burbank", scene: "lot",
       title: "Day one",
-      setup: "The merger closed yesterday and you run the studio now. The bankers want $53 billion of debt down to your target by March. The comp committee slides a bonus formula across the table: it pays on this year's cost savings.",
+      setup: "The merger closed yesterday and you run the studio now. The bankers want $53 billion of debt down to your target by March. The board's pay committee slides your bonus deal across the table: it pays you for this year's cost savings.",
       choices: [
         { id: "sign", label: "Sign it. Bonus pays on this year's savings.",
           thisYear: 0, threeYear: 0, writeOff: 0, goodwill: 0, crew: 0,
           result: "You sign. The CFO nods." },
-        { id: "threeyr", label: "Ask for a formula tied to three-year results.",
+        { id: "threeyr", label: "Ask for a bonus tied to three-year results.",
           thisYear: 0, threeYear: 0, writeOff: 0, goodwill: 2, crew: 0,
-          result: "The committee says shareholders like the annual number. You sign the annual one anyway." },
+          result: "The committee says shareholders like the one-year number. You sign the one-year deal anyway." },
         { id: "people", label: "Ask what happens to the people who made the movies.",
           thisYear: 0, threeYear: 0, writeOff: 0, goodwill: 3, crew: 0,
           result: "The committee looks at you. The CFO laughs. You sign." }
@@ -32,7 +32,7 @@ window.WRITEOFF_DATA = {
       real: "sign",
       card: {
         did: "Warner Bros. Discovery paid its CEO $51.9M for 2024, with the cash bonus at 108.6% of target.",
-        next: "The company lost $11.5B that year. The committee credited $1.8B in cost savings and paid above target anyway.",
+        next: "The company lost $11.5B that year. The pay committee counted $1.8B in cost savings and paid him more than his target bonus anyway.",
         driver: "PAY",
         chip: "You get what you measure.",
         source: { outlet: "Variety", title: "WBD lost $11.5 billion in 2024. So how did Zaslav exceed his bonus targets?", date: "June 5, 2025",
@@ -47,7 +47,7 @@ window.WRITEOFF_DATA = {
       choices: [
         { id: "fund", label: "Fund it for a year and see.",
           thisYear: -200, threeYear: -100, writeOff: 0, goodwill: 3, crew: 0,
-          result: "The burn continues. The newsroom cheers. The bankers do not." },
+          result: "The spending continues. The newsroom cheers. The bankers do not." },
         { id: "fold", label: "Fold it into the main app and keep half the staff.",
           thisYear: -50, threeYear: 20, writeOff: 0, goodwill: 0, crew: -150,
           result: "Half the team moves over. Half goes home." },
@@ -69,9 +69,9 @@ window.WRITEOFF_DATA = {
     {
       id: "purge", month: 2, monthName: "June", stop: "The 101, Cahuenga Pass", scene: "freeway",
       title: "The library purge",
-      setup: "Finance has a list of 36 shows on your streaming service that don't pull big numbers. Pulling them saves the residual payments to the people who made them and lets you write the shows down. The creators find out when the shows disappear.",
+      setup: "Finance has a list of 36 shows on your streaming service that don't pull big numbers. Pulling them stops the payments still owed to the people who made them, and lets you write the shows off: count them as a loss and pay less tax. The creators find out when the shows disappear.",
       choices: [
-        { id: "pull", label: "Pull all 36 and take the write-down.",
+        { id: "pull", label: "Pull all 36 and write them off.",
           thisYear: 50, threeYear: 20, writeOff: 30, goodwill: -8, crew: -70,
           result: "Thirty-six shows vanish overnight. Seventy people are laid off the same week." },
         { id: "keep", label: "Keep them. They're already paid for.",
@@ -84,7 +84,7 @@ window.WRITEOFF_DATA = {
       real: "pull",
       card: {
         did: "HBO Max removed 36 titles in August 2022, including Infinity Train and Summer Camp Island, and laid off about 70 people the same week.",
-        next: "The stated reason was consolidating platforms before the merger. Variety noted the removals would save residual payments to creators.",
+        next: "The official reason was folding two streaming apps into one before the merger. Variety noted the removals would also save residuals, the payments still owed to the people who made the shows.",
         driver: "RESIDUALS",
         chip: "Nobody who made these shows was in the room.",
         source: { outlet: "NPR", title: "HBO Max cuts dozens of titles in a cost-cutting move before a merger with Discovery", date: "Aug 19, 2022",
@@ -95,7 +95,7 @@ window.WRITEOFF_DATA = {
     {
       id: "superhero", month: 3, monthName: "July", stop: "Hollywood Boulevard", scene: "hollywood",
       title: "The superhero movie",
-      setup: "A $90 million superhero movie is almost finished. The old owners planned it for streaming, which you've decided is the wrong strategy. Finance points out that if it never comes out, the whole $90 million comes off the books this year.",
+      setup: "A $90 million superhero movie is almost finished. The old owners planned it for streaming, which you've decided is the wrong strategy. Finance points out that if it never comes out, you can write off the whole $90 million this year.",
       choices: [
         { id: "theaters", label: "Put it in theaters. Spend $60M on marketing.",
           thisYear: -60, threeYear: 30, writeOff: 0, goodwill: 6, crew: 0,
@@ -111,7 +111,7 @@ window.WRITEOFF_DATA = {
       card: {
         did: "Warner Bros. Discovery shelved Batgirl in August 2022 with the budget at $90M after COVID delays, citing a \"strategic shift\" on DC and HBO Max.",
         next: "Scoob! Holiday Haunt was shelved the same day. Neither film has been released.",
-        driver: "BOOKS",
+        driver: "ACCOUNTING",
         chip: "New boss, new strategy, old movie.",
         source: { outlet: "NPR", title: "Warner Bros. kills off Batgirl movie, $90 million in", date: "Aug 3, 2022",
                   url: "https://www.npr.org/2022/08/03/1115380005/warner-bros-kills-off-batgirl-movie-90-million-in" }
@@ -121,7 +121,7 @@ window.WRITEOFF_DATA = {
     {
       id: "tcm", month: 4, monthName: "August", stop: "Sunset Strip", scene: "sunset",
       title: "The classic movie channel",
-      setup: "Your classic movie channel is beloved and small. The budget order says cut its salary spend by two-thirds. Three of the most famous directors alive have the channel on speed dial.",
+      setup: "Your classic movie channel is beloved and small. The budget order says cut its payroll by two-thirds. Three of the most famous directors alive have the channel on speed dial.",
       choices: [
         { id: "cut", label: "Cut the staff by two-thirds.",
           thisYear: 30, threeYear: -10, writeOff: 0, goodwill: -8, crew: -40,
@@ -135,8 +135,8 @@ window.WRITEOFF_DATA = {
       ],
       real: "reverse",
       card: {
-        did: "WBD cut TCM's executive ranks in June 2023 after an order to cut salary spending by two-thirds.",
-        next: "Spielberg, Scorsese and Paul Thomas Anderson intervened. Zaslav reversed part of the cuts and the three agreed to help curate the channel, unpaid.",
+        did: "WBD cut TCM's top staff in June 2023 after an order to cut its payroll by two-thirds.",
+        next: "Spielberg, Scorsese and Paul Thomas Anderson stepped in. Zaslav reversed part of the cuts, and the three agreed to help pick the channel's movies, unpaid.",
         driver: "COST TARGET",
         chip: "Three phone calls beat the org chart.",
         source: { outlet: "Fortune", title: "Spielberg, Scorsese and Paul Thomas Anderson step in on Turner Classic Movies", date: "June 29, 2023",
@@ -156,14 +156,14 @@ window.WRITEOFF_DATA = {
         { id: "cancel", label: "Cancel it. You don't need two of these.",
           thisYear: 170, threeYear: 100, writeOff: 0, goodwill: -8, crew: -350, shelves: true, kills: "bigfilm",
           result: "Sets come down before they go up." },
-        { id: "shop", label: "Let the producers shop it to another studio.",
+        { id: "shop", label: "Let the producers take it to another studio.",
           thisYear: 170, threeYear: 90, writeOff: 0, goodwill: 2, crew: 0, needsBuyer: true,
           result: "The producers take their meetings. Maybe it gets made. Not by you." }
       ],
       real: "shop",
       card: {
-        did: "Disney cancelled Fox's Mouse Guard two weeks before production in April 2019, reportedly because it didn't want Fox making big-budget films that competed with Disney's own.",
-        next: "The producers were allowed to shop it elsewhere. Disney also shut the Fox 2000 label that made Hidden Figures and The Devil Wears Prada.",
+        did: "Disney cancelled Fox's Mouse Guard two weeks before filming in April 2019, reportedly because it didn't want Fox making big-budget films that competed with Disney's own.",
+        next: "The producers were allowed to offer it to other studios. Disney also shut down Fox 2000, the division that made Hidden Figures and The Devil Wears Prada.",
         driver: "MERGER",
         chip: "Every merger is one fewer place a movie can go.",
         source: { outlet: "SlashFilm", title: "Disney scraps Fox's Mouse Guard two weeks before production begins", date: "April 18, 2019",
@@ -174,7 +174,7 @@ window.WRITEOFF_DATA = {
     {
       id: "kidsshow", month: 6, monthName: "October", stop: "Culver City", scene: "culver",
       title: "The kids' show",
-      setup: "A popular animated kids' show has a finished second season sitting on a drive. Finance wants it off the service so it can be written off before the quarter closes. The fans have not been told.",
+      setup: "A popular animated kids' show has a finished second season sitting on a drive. Finance wants it off the service so the company can write it off before the quarter ends. The fans have not been told.",
       choices: [
         { id: "writeoff", label: "Pull it and write it off.",
           thisYear: 40, threeYear: -10, writeOff: 40, goodwill: -6, crew: -120, shelves: true, kills: "kidsshow",
@@ -188,7 +188,7 @@ window.WRITEOFF_DATA = {
       ],
       real: "sell",
       card: {
-        did: "Paramount+ pulled Star Trek: Prodigy and Grease: Rise of the Pink Ladies in June 2023 and took a write-off while season two of Prodigy was still in post-production.",
+        did: "Paramount+ pulled Star Trek: Prodigy and Grease: Rise of the Pink Ladies in June 2023 and took a write-off while season two of Prodigy was still being finished.",
         next: "Netflix picked up Prodigy and released the finished second season in July 2024.",
         driver: "TAX",
         chip: "Worthless to you isn't worthless.",
@@ -199,10 +199,10 @@ window.WRITEOFF_DATA = {
 
     {
       id: "writedown", month: 7, monthName: "November", stop: "Santa Monica Pier", scene: "santamonica",
-      title: "The big write-down",
-      setup: "Finance has a bigger idea. Remove dozens of your own original shows and movies from the service and take one giant charge, $1.5 billion, all at once. Future quarters look cheaper and the residual checks stop.",
+      title: "The big write-off",
+      setup: "Finance has a bigger idea. Remove dozens of your own original shows and movies from the service and write off $1.5 billion all at once. Future quarters look cheaper, and the checks to the people who made them stop.",
       choices: [
-        { id: "charge", label: "Take the charge. Pull the titles.",
+        { id: "charge", label: "Take the write-off. Pull the titles.",
           thisYear: 100, threeYear: 20, writeOff: 150, goodwill: -10, crew: -200,
           result: "Dozens of shows disappear on a Friday. The writers are on strike that week." },
         { id: "keep", label: "Keep the titles.",
@@ -214,9 +214,9 @@ window.WRITEOFF_DATA = {
       ],
       real: "charge",
       card: {
-        did: "Disney removed dozens of originals, including Willow, from Disney+ and Hulu on May 26, 2023 and disclosed a $1.5B impairment charge in an SEC filing.",
+        did: "Disney removed dozens of originals, including Willow, from Disney+ and Hulu on May 26, 2023 and reported a $1.5B write-off in an SEC filing.",
         next: "The filing called it a \"strategic change in approach to content curation.\" It landed during a writers' strike and blindsided many of the creators.",
-        driver: "BOOKS",
+        driver: "ACCOUNTING",
         chip: "The spreadsheet made the call.",
         source: { outlet: "TheWrap", title: "Disney to take $1.5 billion content write-off charge after removing titles from streaming platforms", date: "June 2023",
                   url: "https://www.thewrap.com/disney-takes-write-off-after-removing-shows-disney-plus-hulu/" }
@@ -252,7 +252,7 @@ window.WRITEOFF_DATA = {
     {
       id: "congress", month: 9, monthName: "January", stop: "Your phone, 6:40 a.m.", scene: "capitol",
       title: "The congressman",
-      setup: "A congressman has posted about you. He says scrapping finished films for tax breaks is predatory, and he's asking the FTC to look at it. The post is doing numbers.",
+      setup: "A congressman has posted about you. He says scrapping finished films for tax breaks is predatory, and he's asking federal regulators to look into it. The post is doing numbers.",
       choices: [
         { id: "respond", label: "Put out a statement about tough choices.",
           thisYear: 0, threeYear: 0, writeOff: 0, goodwill: 2, crew: 0,
@@ -262,7 +262,7 @@ window.WRITEOFF_DATA = {
           result: "The post keeps doing numbers." },
         { id: "reopen", label: "Quietly reopen the sale of what you shelved.",
           thisYear: 20, threeYear: 50, writeOff: -30, goodwill: 6, crew: 0, needsBuyer: true, needsShelved: true, unshelves: true,
-          result: "You give back the write-off. A distributor sends a term sheet by Friday." }
+          result: "You give back the write-off. A distributor sends an offer by Friday." }
       ],
       real: "ignore",
       card: {
@@ -287,7 +287,7 @@ window.WRITEOFF_DATA = {
             { id: "sellall", label: "Sell them everything you shelved.",
               thisYear: 20, threeYear: 50, writeOff: -30, goodwill: 5, crew: 0, perShelved: true, unshelves: true,
               result: "The films come back from the dead. Not under your name." },
-            { id: "refuse", label: "Refuse. The write-offs are already booked.",
+            { id: "refuse", label: "Refuse. You already took the write-offs.",
               thisYear: 0, threeYear: -20, writeOff: 0, goodwill: -3, crew: 0, perShelved: true,
               result: "The distributor leaves. The drives stay in the vault." }
           ]
@@ -323,7 +323,7 @@ window.WRITEOFF_DATA = {
     {
       id: "payvote", month: 11, monthName: "March", stop: "The shareholder meeting, Downtown", scene: "downtown",
       title: "The pay vote",
-      setup: "Twelve months are up. The shareholders vote on your pay. The vote is advisory, which means it changes nothing either way.",
+      setup: "Twelve months are up. The shareholders vote on your pay. The vote is non-binding, which means it changes nothing either way.",
       choices: [
         { id: "collect", label: "Collect the bonus.",
           thisYear: 0, threeYear: 0, writeOff: 0, goodwill: 0, crew: 0,
@@ -332,7 +332,7 @@ window.WRITEOFF_DATA = {
       real: "collect",
       card: {
         did: "Almost 60% of votes cast went against the CEO's $51.9M pay package at Warner Bros. Discovery in June 2025.",
-        next: "The vote was advisory. The pay was unchanged. The people who made the films had no vote at all.",
+        next: "The vote was non-binding. The pay was unchanged. The people who made the films had no vote at all.",
         driver: "PAY",
         chip: "The people who paid for this don't get a vote.",
         source: { outlet: "Variety", title: "WBD shareholders vote against CEO David Zaslav's $52 million pay package in a symbolic rebuke", date: "June 4, 2025",
@@ -355,11 +355,11 @@ window.WRITEOFF_DATA = {
           { chance: 1, text: "You arrive late but intact. -$1M.", cash: -1 } ] }
       ] },
     { id: "rivalmerger", when: "buyers > 0 && month >= 2", text: "A rival studio announces a merger. One fewer buyer in town.", buyers: -1, once: true },
-    { id: "trades", when: "shelved.length > 0", text: "The trades run a story on your write-offs. It's not flattering.", goodwill: -5 },
+    { id: "trades", when: "shelved.length > 0", text: "The Hollywood press runs a story on your write-offs. It's not flattering.", goodwill: -5 },
     { id: "storyboards", when: "shelved.length > 0", text: "An animator posts storyboards from the film you shelved. Two million views.", goodwill: -5 },
     { id: "cfochart", when: "true", text: "Your CFO sends a chart. Debt is down. He adds a smiley face.", bonus: 1 },
     { id: "strike", when: "month >= 1 && month <= 6", text: "The writers go on strike. Production slows everywhere.", goodwill: -3, cash: -10 },
-    { id: "talentleaves", when: "goodwill < 30 && month >= 8", text: "Top directors are taking their next projects elsewhere. Next year's slate is thin.", bonus: -5 },
+    { id: "talentleaves", when: "goodwill < 30 && month >= 8", text: "Top directors are taking their next projects elsewhere. Next year's lineup is thin.", bonus: -5 },
     { id: "bankers", when: "cash < 0", text: "The bankers call. They've seen the cash number.", goodwill: -3, once: true }
   ],
 
@@ -373,9 +373,9 @@ window.WRITEOFF_DATA = {
   ],
 
   pace: [
-    { id: "steady",     name: "Steady",         text: "Debt target $46.0B. You can get there without killing anything.", debtTarget: 46.0 },
-    { id: "aggressive", name: "Aggressive",     text: "Debt target $45.5B. You'll need some savings.", debtTarget: 45.5 },
-    { id: "slash",      name: "Slash and Burn", text: "Debt target $45.0B. Finance is very excited.", debtTarget: 45.0 }
+    { id: "steady",     name: "Steady",         text: "Get debt down to $46.0B. You can get there without killing anything.", debtTarget: 46.0 },
+    { id: "aggressive", name: "Aggressive",     text: "Get debt down to $45.5B. You'll need some savings.", debtTarget: 45.5 },
+    { id: "slash",      name: "Slash and Burn", text: "Get debt down to $45.0B. Finance is very excited.", debtTarget: 45.0 }
   ],
 
   about: "Write-Off is a semester project for MNGT 301 at the University of Nebraska-Lincoln by team durKheim. Every decision in the game is based on a real one, cited on the card after you choose. Round two changes one rule to show how the same decision looks under different incentives. Game dollar amounts are simplified; the real figures are on the cards."

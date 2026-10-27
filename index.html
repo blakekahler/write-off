@@ -350,7 +350,7 @@ function disabledReason(choice) {
 function computePayVote() {
   const against = Math.round(clamp(35 + (state.bonus - 100) * 0.8 + (50 - state.goodwill) * 0.6, 15, 85));
   const text = against > 50
-    ? against + '% of shares voted against your pay. The vote is advisory. Nothing changes.'
+    ? against + '% of shares voted against your pay. The vote changes nothing.'
     : (100 - against) + '% of shares approved your pay.';
   return { against, text };
 }
@@ -565,7 +565,7 @@ function statusBar() {
   return '<footer class="status" aria-label="Status">' +
     '<div class="cell"><span class="k">Cash</span><span class="v' + (state.cash < 0 ? ' neg' : '') + '">' + money(state.cash) + '</span></div>' +
     '<div class="cell"><span class="k">Debt</span><span class="v">' + debtFmt(state.debt) + '</span><span class="sub">target ' + debtFmt(state.debtTarget) + '</span></div>' +
-    '<div class="cell"><span class="k">Your bonus</span><span class="v">' + Math.round(state.bonus) + '%</span></div>' +
+    '<div class="cell"><span class="k">Your bonus</span><span class="v">' + money1(24 * state.bonus / 100) + '</span><span class="sub">' + Math.round(state.bonus) + '% of target</span></div>' +
     '<div class="cell"><span class="k">Crew working</span><span class="v">' + num(state.crew) + '</span></div>' +
     '<button class="src" data-action="to-sources">Sources</button>' +
     '</footer>';
@@ -613,10 +613,10 @@ function stopScreen() {
 function shelvedOverlay() {
   const l = state.last;
   const name = projectName(l.choice.kills);
-  return '<button class="shelved" data-action="continue" data-autofocus aria-label="' + esc(name) + ' has been shelved. Cause: impairment. Crew sent home: ' + num(-l.eff.crew) + '. Tap to continue.">' +
+  return '<button class="shelved" data-action="continue" data-autofocus aria-label="' + esc(name) + ' has been shelved. Cause: accounting. Crew sent home: ' + num(-l.eff.crew) + '. Tap to continue.">' +
     '<span class="stone" aria-hidden="true">' + tombstoneSVG() + '</span>' +
     '<span class="line1">' + esc(name) + '<br>has been shelved.</span>' +
-    '<span class="line2">Cause: impairment.</span>' +
+    '<span class="line2">Cause: accounting.</span>' +
     '<span class="line3">Crew sent home: ' + num(-l.eff.crew) + '.</span>' +
     '<span class="tap">Tap to continue</span>' +
     '</button>';
@@ -644,7 +644,7 @@ function receiptScreen() {
     '<div class="paper">' +
     '<div class="paper-head"><div class="ph1">' + esc(state.player.studio) + '</div><div class="ph2">Receipt &middot; Round ' + (r.round === 1 ? 'one' : 'two') + (rule ? ' &middot; ' + esc(rule.name) : '') + '</div></div>' +
     '<div class="row"><span>Debt</span><span>' + debtFmt(r.debt) + ' vs. ' + debtFmt(r.target) + ' target. ' + (r.hit ? 'Hit.' : 'Missed.') + '</span></div>' +
-    '<div class="row"><span>Bonus</span><span>' + Math.round(r.bonus) + '% of target, ' + money1(r.bonusDollars) + '</span></div>' +
+    '<div class="row"><span>Bonus</span><span>' + money1(r.bonusDollars) + ' (' + Math.round(r.bonus) + '% of target)</span></div>' +
     '<div class="row"><span>Projects shelved</span><span>' + allShelved.length + (r.sold.length ? ' (' + r.sold.length + ' sold back later)' : '') + '</span></div>' +
     (allShelved.length ? '<div class="rnames">' + allShelved.map(id => esc(projectName(id))).join(', ') + '</div>' : '') +
     '<div class="row"><span>Crew sent home</span><span>' + num(r.sentHome) + '</span></div>' +
@@ -695,7 +695,7 @@ function finalScreen() {
     (a && b ? '<div class="final-cmp">' +
       '<div class="fc-h">Round one</div><div class="fc-h">Round two' + (rule ? ': ' + esc(rule.name) : '') + '</div>' +
       cell('December', esc(a.december)) + cell('December', esc(b.december)) +
-      cell('Bonus', Math.round(a.bonus) + '% (' + money1(a.bonusDollars) + ')') + cell('Bonus', Math.round(b.bonus) + '% (' + money1(b.bonusDollars) + ')') +
+      cell('Bonus', money1(a.bonusDollars) + ' (' + Math.round(a.bonus) + '% of target)') + cell('Bonus', money1(b.bonusDollars) + ' (' + Math.round(b.bonus) + '% of target)') +
       cell('Debt target', (a.hit ? 'Hit' : 'Missed') + ' (' + debtFmt(a.debt) + ')') + cell('Debt target', (b.hit ? 'Hit' : 'Missed') + ' (' + debtFmt(b.debt) + ')') +
       cell('Shelved', String(a.shelved.length + a.sold.length)) + cell('Shelved', String(b.shelved.length + b.sold.length)) +
       cell('Crew sent home', num(a.sentHome)) + cell('Crew sent home', num(b.sentHome)) +
