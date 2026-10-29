@@ -57,6 +57,9 @@ async function main() {
 
   await shot(page, '01-title');
   await checkOverflow('title');
+  await page.click('[data-action=to-intro]');
+  await shot(page, '01b-intro');
+  await checkOverflow('intro');
   await page.click('[data-action=to-setup]');
   await page.fill('input[data-field=name]', 'Blake');
   await page.fill('input[data-field=studio]', 'durKheim Pictures');

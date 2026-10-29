@@ -142,16 +142,16 @@
 
   /* Overlays */
   .overlay { position: fixed; inset: 0; z-index: 20; background: rgba(27, 27, 31, .82); display: flex; align-items: flex-end; justify-content: center; outline: none; }
-  .card { width: 100%; max-width: 720px; max-height: 100vh; max-height: 100dvh; overflow: auto; background: var(--ink); border: 3px solid var(--white); border-bottom: 0; padding: 18px var(--gr) calc(18px + var(--sab)) var(--gl); animation: slide-up .32s cubic-bezier(.2, .8, .2, 1) both; }
+  .card { width: 100%; max-width: 720px; max-height: 100vh; max-height: 100dvh; overflow: auto; background: var(--ink); border: 3px solid var(--white); border-bottom: 0; padding: 14px var(--gr) calc(14px + var(--sab)) var(--gl); animation: slide-up .32s cubic-bezier(.2, .8, .2, 1) both; }
   @keyframes slide-up { from { transform: translateY(100%); } to { transform: none; } }
-  .cl { margin-bottom: 12px; }
-  .cl-k { display: block; font-family: var(--pixel); font-size: 8px; color: var(--concrete); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; line-height: 1.6; }
+  .cl { margin-bottom: 9px; }
+  .cl-k { display: block; font-family: var(--pixel); font-size: 8px; color: var(--concrete); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 3px; line-height: 1.6; }
   .cl-v { display: block; font-size: 22px; line-height: 1.12; }
   .cl.you .cl-v { color: var(--sand); }
-  .tags { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 6px 0 12px; }
-  .driver { font-family: var(--pixel); font-size: 9px; color: var(--ink); background: var(--gold); padding: 7px 9px 5px; line-height: 1; white-space: nowrap; }
-  .chip { font-size: 21px; color: var(--crt); border: 2px solid var(--crt); padding: 3px 10px; line-height: 1.15; }
-  .source { display: inline-block; font-size: 20px; color: var(--glass); margin-bottom: 16px; }
+  .driver { display: inline-block; font-size: 22px; color: var(--ink); background: var(--gold); padding: 2px 10px; line-height: 1.12; }
+  .chip { display: inline-block; font-size: 22px; color: var(--crt); border: 2px solid var(--crt); padding: 1px 10px; line-height: 1.12; }
+  .source { display: inline-block; font-size: 20px; color: var(--glass); margin: 0 0 12px; }
+  .source .cl-k { display: inline; margin-right: 6px; }
   .source::after { content: " \2197"; }
 
   /* Random events */
@@ -161,12 +161,22 @@
   .evbox .ev-t { font-size: 24px; line-height: 1.12; margin-bottom: 16px; }
   .evbox .stack { margin: 0; }
 
+  /* Intro */
+  .intro .h { margin: 24px 0 14px; }
+  .intro p { font-size: 24px; line-height: 1.15; margin: 0 0 14px; }
+  .legend { border: 3px solid var(--asphalt); background: var(--black); padding: 12px 14px; margin: 4px 0 20px; display: grid; gap: 10px; }
+  .legend .lg { display: grid; grid-template-columns: 112px 1fr; gap: 10px; align-items: baseline; }
+  .legend .lk { font-family: var(--pixel); font-size: 9px; color: var(--crt); line-height: 1.6; }
+  .legend .lv { font-size: 21px; color: var(--concrete); line-height: 1.1; }
+  @media (max-width: 400px) { .legend .lg { grid-template-columns: 100px 1fr; } }
+
   /* Shelved */
   .shelved { position: fixed; inset: 0; z-index: 30; width: 100%; background: var(--black); color: var(--white); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; font-family: var(--pixel); font-size: 12px; line-height: 2; padding: 24px var(--gr) 24px var(--gl); }
   .shelved .stone { display: block; width: 120px; margin-bottom: 20px; }
   .shelved .stone svg { display: block; width: 100%; height: auto; }
   .shelved .line1 { display: block; font-size: 13px; color: var(--white); margin-bottom: 8px; }
   .shelved .line2, .shelved .line3 { display: block; color: var(--concrete); }
+  .shelved .line4 { display: block; font-family: var(--mono); font-size: 21px; line-height: 1.1; color: var(--asphalt); margin-top: 18px; max-width: 420px; }
   .shelved .tap { display: block; margin-top: 36px; font-size: 9px; color: var(--asphalt); animation: blink 1.2s steps(2) infinite; }
   @keyframes blink { 50% { opacity: 0; } }
 
@@ -298,7 +308,7 @@ function resetRound(round, rule) {
     month: 0, stopIndex: -1,
     cash: 500, debt: 53.0, debtTarget: pace.debtTarget, bonus: 100, crew: 2400, goodwill: 50, buyers: 2,
     shelved: [], sold: [], reverts: [], choices: [], fired: [], pendingEvent: null,
-    sentHome: 0, payVote: null, receipt: null, travel: null, last: null
+    sentHome: 0, payVote: null, receipt: null, travel: null, last: null, carTier: 2
   });
   if (RULES && typeof RULES.startState === 'function') Object.assign(state, RULES.startState(rule) || {});
 }
@@ -411,6 +421,9 @@ function travelTo(i) {
     if (typeof stop.onArrive.buyers === 'number') state.buyers = Math.max(0, state.buyers + stop.onArrive.buyers);
     if (stop.onArrive.note) notes.push({ kind: 'note', text: stop.onArrive.note });
   }
+  const tier = nextTier(state.carTier, state.cash);
+  if (tier !== state.carTier) notes.push({ kind: 'note', text: carNote(state.carTier, tier) });
+  state.carTier = tier;
   const tomb = tombstoneFor(stop);
   if (tomb) notes.push({ kind: 'tomb', text: tomb });
   const ev = drawEvent();
@@ -427,6 +440,25 @@ function afterDrive() {
   else arrive();
 }
 function arrive() { clearTimeout(timer); state.screen = 'stop'; render(); }
+
+// ---------- the car you drive (flavor: follows cash) ----------
+// Tier lower bounds: 1 rental at $0M, 2 town car at $300M, 3 limo at $800M, with a $40M buffer
+// each way so a few million of overtime doesn't swap your car every month.
+const TIER_FLOOR = [0, 300, 800];
+function nextTier(cur, cash) {
+  let t = cur;
+  while (t < 3 && cash >= TIER_FLOOR[t] + 40) t++;
+  while (t > 0 && cash < TIER_FLOOR[t - 1] - 40) t--;
+  return t;
+}
+function carNote(from, to) {
+  if (to === 3) return 'Cash is up. The board sends a limo.';
+  if (to === 0) return 'Cash is below zero. The rental went back. This one was parked behind Stage 7.';
+  if (to === 1 && from > 1) return 'Cash is tight. The lease company took the town car. You get a rental.';
+  if (to === 1) return 'Cash is back above zero. The rental company gave you another chance.';
+  if (from === 3) return 'The limo goes back. Town car again.';
+  return 'Cash is back up. You get the town car back.';
+}
 
 // ---------- random events ----------
 const EVENTS = DATA.events || [];
@@ -544,11 +576,29 @@ function titleScreen() {
     '<div class="hero-text"><h1 class="logo">WRITE-OFF</h1></div></div>' +
     '<p class="tagline">An Oregon Trail through Los Angeles.</p>' +
     '<div class="stack">' +
-    '<button class="btn primary" data-action="to-setup">Start</button>' +
+    '<button class="btn primary" data-action="to-intro">Start</button>' +
     '<button class="btn" data-action="to-sources">Sources</button>' +
     '<button class="btn" data-action="to-about">About</button>' +
     '</div>' +
     '<p class="foot">MNGT 301 &middot; team durKheim &middot; University of Nebraska-Lincoln</p>' +
+    '</section>';
+}
+
+function introScreen() {
+  return '<section class="screen intro" tabindex="-1">' +
+    '<h2 class="h">Here\'s the deal.</h2>' +
+    '<p>You\'re the new boss of a Hollywood studio. Your company just bought another one, and it borrowed $53 billion to do it.</p>' +
+    '<p>The bankers want that debt paid down by March. Your bonus pays out on how much money you save this year. Nobody said how.</p>' +
+    '<p>For the next 12 months you drive around Los Angeles. At every stop a finished movie or show lands on your desk, and you pick what happens to it. Finance, your money team, tells you what each choice does to this year\'s numbers.</p>' +
+    '<p>After every choice you see what a real studio actually did. Play the year once, get your receipt, then play it again with one rule changed.</p>' +
+    '<div class="lbl">The four numbers at the bottom of the screen</div>' +
+    '<div class="legend">' +
+    '<div class="lg"><span class="lk">Cash</span><span class="lv">Money in the bank.</span></div>' +
+    '<div class="lg"><span class="lk">Debt</span><span class="lv">What you owe, and where the bankers want it by March.</span></div>' +
+    '<div class="lg"><span class="lk">Your bonus</span><span class="lv">What you take home. Right now it pays on this year\'s savings.</span></div>' +
+    '<div class="lg"><span class="lk">Crew</span><span class="lv">People still working for you.</span></div>' +
+    '</div>' +
+    '<button class="btn primary" data-action="to-setup">Got it. Let\'s drive.</button>' +
     '</section>';
 }
 
@@ -581,7 +631,7 @@ function travelScreen() {
   const t = state.travel;
   const driving = t.phase === 'driving' && !reducedMotion();
   return '<section class="screen travel" tabindex="-1">' +
-    '<div class="scene-wrap' + (driving ? ' travelling' : '') + '">' + sceneHTML(stop.scene, { label: stop.stop, car: true }) + '</div>' +
+    '<div class="scene-wrap' + (driving ? ' travelling' : '') + '">' + sceneHTML(stop.scene, { label: stop.stop, car: true, tier: state.carTier }) + '</div>' +
     '<div class="travel-info">' +
     '<div class="month">' + esc(stop.monthName) + '</div>' +
     '<div class="dest">' + esc(stop.stop) + '</div>' +
@@ -597,7 +647,7 @@ function stopScreen() {
   const stop = STOPS[state.stopIndex];
   const view = stopView(stop);
   return '<section class="screen stop" tabindex="-1">' +
-    '<div class="scene-wrap">' + sceneHTML(stop.scene, { label: stop.stop, car: true }) + '</div>' +
+    '<div class="scene-wrap">' + sceneHTML(stop.scene, { label: stop.stop, car: true, tier: state.carTier }) + '</div>' +
     '<div class="where">' + esc(stop.monthName) + ' &middot; ' + esc(stop.stop) + '</div>' +
     '<h2 class="h">' + esc(stop.title) + '</h2>' +
     '<p class="setup-text">' + esc(view.setup) + '</p>' +
@@ -623,20 +673,30 @@ function shelvedOverlay() {
     '<span class="line1">' + esc(name) + '<br>has been shelved.</span>' +
     '<span class="line2">Cause: accounting.</span>' +
     '<span class="line3">Crew sent home: ' + num(-l.eff.crew) + '.</span>' +
+    '<span class="line4">Shelved means finished and paid for, then locked away instead of released.</span>' +
     '<span class="tap">Tap to continue</span>' +
     '</button>';
 }
+
+// The one-word driver tags in scenarios.js, said in plain words for the card.
+const DRIVER_WORDS = {
+  'PAY': "the boss's bonus", 'NEW BOSS': 'a new boss', 'RESIDUALS': 'payments still owed to the creators',
+  'ACCOUNTING': 'making the books look better', 'BOOKS': 'making the books look better', 'COST TARGET': 'a cost-cutting order',
+  'MERGER': 'a merger', 'TAX': 'a tax break', 'PRESSURE': 'public pressure'
+};
+function driverWords(tag) { const k = String(tag || '').toUpperCase().trim(); return DRIVER_WORDS[k] || String(tag || '').toLowerCase(); }
 
 function cardOverlay() {
   const l = state.last;
   const c = l.stop.card;
   const src = c.source || {};
   return '<div class="overlay" role="dialog" aria-modal="true" aria-label="What actually happened" tabindex="-1" data-autofocus><div class="card">' +
-    '<div class="cl you"><span class="cl-k">You</span><span class="cl-v">' + esc(l.youLine) + '</span></div>' +
+    '<div class="cl you"><span class="cl-k">Your call</span><span class="cl-v">' + esc(l.youLine) + '</span></div>' +
     '<div class="cl"><span class="cl-k">What actually happened</span><span class="cl-v">' + esc(c.did) + '</span></div>' +
     '<div class="cl"><span class="cl-k">What happened next</span><span class="cl-v">' + esc(c.next) + '</span></div>' +
-    '<div class="tags"><span class="driver">' + esc(c.driver) + '</span><span class="chip">' + esc(c.chip) + '</span></div>' +
-    (src.url ? '<a class="source" href="' + esc(src.url) + '" target="_blank" rel="noopener">' + esc(src.outlet) + ', ' + esc(src.date) + '</a>' : '') +
+    '<div class="cl"><span class="cl-k">The real reason</span><span class="driver">' + esc(driverWords(c.driver)) + '</span></div>' +
+    '<div class="cl"><span class="cl-k">The lesson</span><span class="chip">' + esc(c.chip) + '</span></div>' +
+    (src.url ? '<a class="source" href="' + esc(src.url) + '" target="_blank" rel="noopener"><span class="cl-k">Source</span>' + esc(src.outlet) + ', ' + esc(src.date) + '</a>' : '') +
     '<button class="btn primary" data-action="driveon">Drive on.</button>' +
     '</div></div>';
 }
@@ -653,12 +713,12 @@ function receiptScreen() {
     '<div class="row"><span>Projects shelved</span><span>' + allShelved.length + (r.sold.length ? ' (' + r.sold.length + ' sold back later)' : '') + '</span></div>' +
     (allShelved.length ? '<div class="rnames">' + allShelved.map(id => esc(projectName(id))).join(', ') + '</div>' : '') +
     '<div class="row"><span>Crew sent home</span><span>' + num(r.sentHome) + '</span></div>' +
-    '<div class="row"><span>Talent trust</span><span>' + esc(r.trust) + '</span></div>' +
-    '<div class="row"><span>Pay vote</span><span>' + esc(r.payVote.text) + '</span></div>' +
+    '<div class="row"><span>Hollywood\'s trust in you</span><span>' + esc(r.trust) + '</span></div>' +
+    '<div class="row"><span>Shareholder vote on your pay</span><span>' + esc(r.payVote.text) + '</span></div>' +
     r.lines.map(l => '<p class="rline">' + esc(l) + '</p>').join('') +
-    '<div class="cmp-head">You vs. the real company</div>' +
-    r.rows.map(row => '<div class="cmp' + (row.match ? ' match' : '') + '"><div class="t">' + esc(row.month) + ' &middot; ' + esc(row.title) + '</div><div class="you"><b>You:</b> ' + esc(row.yours) + '</div><div class="real"><b>Real:</b> ' + esc(row.real) + '</div></div>').join('') +
-    '<div class="row total"><span>Matched the real company</span><span>' + r.matches + ' of ' + r.compared + '</span></div>' +
+    '<div class="cmp-head">Your calls vs. what really happened</div>' +
+    r.rows.map(row => '<div class="cmp' + (row.match ? ' match' : '') + '"><div class="t">' + esc(row.month) + ' &middot; ' + esc(row.title) + '</div><div class="you"><b>You:</b> ' + esc(row.yours) + '</div><div class="real"><b>Real life:</b> ' + esc(row.real) + '</div></div>').join('') +
+    '<div class="row total"><span>Same call as real life</span><span>' + r.matches + ' of ' + r.compared + '</span></div>' +
     '</div>' +
     '<div class="stack">' +
     (r.round === 1
@@ -671,7 +731,7 @@ function receiptScreen() {
 function rulesScreen() {
   return '<section class="screen rules" tabindex="-1">' +
     '<h2 class="h" style="margin-top:24px">Round two. Change one rule.</h2>' +
-    '<p class="lead">Same year, same studio, same debt. Pick the rule that changes before you drive it again.</p>' +
+    '<p class="lead">Same year, same studio, same debt. Pick one rule to change, then drive the year again and see if you make the same calls.</p>' +
     '<div class="stack">' +
     RULE_CARDS.map(rc => '<button class="rule-card' + (rc.available ? '' : ' off') + '" data-action="pick-rule" data-rule="' + esc(rc.id) + '"' + (rc.available ? '' : ' aria-disabled="true"') + '>' +
       '<span class="rname">' + esc(rc.name) + (rc.available ? '' : '<span class="soon">Coming soon</span>') + '</span>' +
@@ -704,7 +764,7 @@ function finalScreen() {
       cell('Debt target', (a.hit ? 'Hit' : 'Missed') + ' (' + debtFmt(a.debt) + ')') + cell('Debt target', (b.hit ? 'Hit' : 'Missed') + ' (' + debtFmt(b.debt) + ')') +
       cell('Shelved', String(a.shelved.length + a.sold.length)) + cell('Shelved', String(b.shelved.length + b.sold.length)) +
       cell('Crew sent home', num(a.sentHome)) + cell('Crew sent home', num(b.sentHome)) +
-      cell('Talent trust', esc(a.trust)) + cell('Talent trust', esc(b.trust)) +
+      cell("Hollywood's trust", esc(a.trust)) + cell("Hollywood's trust", esc(b.trust)) +
       '</div>' : '') +
     '<p class="lead">The log has every stop, every choice, and every source. Download it for the write-up.</p>' +
     '<div class="stack">' +
@@ -759,6 +819,7 @@ function render() {
   let html = '';
   switch (s) {
     case 'title': html = titleScreen(); break;
+    case 'intro': html = introScreen(); break;
     case 'setup': html = setupScreen(); break;
     case 'travel': html = travelScreen(); break;
     case 'stop': html = stopScreen(); break;
@@ -788,6 +849,7 @@ function render() {
 // ---------- actions ----------
 function handle(action, el) {
   switch (action) {
+    case 'to-intro': state.screen = 'intro'; break;
     case 'to-setup': state.screen = 'setup'; break;
     case 'to-title': newGame(); break;
     case 'to-sources': state.from = state.screen; state.screen = 'sources'; break;
@@ -819,7 +881,9 @@ function handle(action, el) {
       addLog({ type: 'exit', text: 'Hardest decision: ' + (state.exit.hardest || '(blank)') + ' | Rule to change in real life: ' + (state.exit.rule || '(blank)') });
       state.screen = 'final'; break;
     case 'exit-skip': addLog({ type: 'exit', text: 'Exit questions skipped.' }); state.screen = 'final'; break;
-    case 'event-ok': case 'event-done': arrive(); return;
+    case 'event-ok': case 'event-done':
+      if (state.travel && state.travel.notes.length) { state.travel.phase = 'wait'; render(); } else arrive();
+      return;
     case 'event-choice': resolveEventChoice(Number(el.dataset.index)); return;
     case 'download': downloadLog(); return;
     case 'copy': copyLog(); return;
@@ -896,7 +960,8 @@ document.addEventListener('keydown', e => {
   const t = state.travel;
   if (state.screen === 'shelved') { e.preventDefault(); handle('continue'); }
   else if (state.screen === 'card') { e.preventDefault(); handle('driveon'); }
-  else if (state.screen === 'travel' && t && (t.phase === 'wait' || (t.phase === 'event' && t.event && (t.outcome || !t.event.choices)))) { e.preventDefault(); arrive(); }
+  else if (state.screen === 'travel' && t && t.phase === 'wait') { e.preventDefault(); arrive(); }
+  else if (state.screen === 'travel' && t && t.phase === 'event' && t.event && (t.outcome || !t.event.choices)) { e.preventDefault(); handle('event-done'); }
 });
 
 newGame();
