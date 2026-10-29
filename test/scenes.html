@@ -14,7 +14,8 @@
   figcaption { font-family: "Press Start 2P", monospace; font-size: 9px; color: #f2c14e; margin: 6px 0 0; }
   .small svg { width: 128px; }
   .blink { animation: blink 1.2s steps(2) infinite; }
-  .car { transform: translateX(272px); }
+  .car { transform: translateX(260px); }
+  .puff { opacity: 0; }
   @keyframes blink { 50% { opacity: 0; } }
 </style>
 </head>
@@ -29,6 +30,7 @@
     return '<figure>' + S[n]({ car: true, label: n }) + '<figcaption>' + n + '</figcaption></figure>';
   }).join('');
   html += '<figure class="small">' + S.tombstone() + '<figcaption>tombstone</figcaption></figure>';
+  html += '<figure><svg viewBox="-12 -4 64 32" width="320" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">' + S.car() + '</svg><figcaption>car (48x24)</figcaption></figure>';
   document.getElementById('grid').innerHTML = html;
 </script>
 </body>

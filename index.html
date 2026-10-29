@@ -61,13 +61,18 @@
   .scene-wrap { position: relative; aspect-ratio: 16 / 9; background: var(--skyNight); overflow: hidden; border: 3px solid var(--asphalt); flex-shrink: 0; }
   .scene-wrap svg { display: block; width: 100%; height: 100%; image-rendering: pixelated; image-rendering: crisp-edges; }
   .scene-wrap::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(27,27,31,0) 0 3px, rgba(27,27,31,.16) 3px 4px); }
-  .scene-wrap .car { transform: translateX(272px); }
+  .scene-wrap .car { transform: translateX(260px); }
   .scene-wrap .blink { animation: blink 1.2s steps(2) infinite; }
+  .scene-wrap .puff { opacity: 0; }
+  .scene-wrap.travelling .puff { animation: puff .25s steps(2) infinite; }
+  .scene-wrap .car-bob { animation: bob .9s steps(1) infinite; }
   .scene-wrap.travelling .car { animation: drive 1.2s linear forwards; }
   .scene-wrap.travelling .far { animation: slide-far 1.2s linear forwards; }
   .scene-wrap.travelling .mid { animation: slide-mid 1.2s linear forwards; }
   .scene-wrap.travelling .near { animation: slide-near 1.2s linear forwards; }
-  @keyframes drive { from { transform: translateX(-32px); } to { transform: translateX(272px); } }
+  @keyframes drive { from { transform: translateX(-56px); } to { transform: translateX(260px); } }
+  @keyframes puff { from { opacity: 1; } to { opacity: 0; } }
+  @keyframes bob { 50% { transform: translateY(-1px); } }
   @keyframes slide-far { from { transform: translateX(4px); } to { transform: translateX(0); } }
   @keyframes slide-mid { from { transform: translateX(8px); } to { transform: translateX(0); } }
   @keyframes slide-near { from { transform: translateX(16px); } to { transform: translateX(0); } }
@@ -535,7 +540,7 @@ function receiptText(r) {
 // ---------- screens ----------
 function titleScreen() {
   return '<section class="screen title" tabindex="-1">' +
-    '<div class="hero scene-wrap">' + sceneHTML('lot', { label: 'The studio lot, Burbank' }) +
+    '<div class="hero scene-wrap">' + sceneHTML('lot', { label: 'The studio lot, Burbank', hero: true }) +
     '<div class="hero-text"><h1 class="logo">WRITE-OFF</h1></div></div>' +
     '<p class="tagline">An Oregon Trail through Los Angeles.</p>' +
     '<div class="stack">' +

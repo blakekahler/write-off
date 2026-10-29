@@ -185,19 +185,35 @@ window.WRITEOFF_SCENES = (function () {
   }
 
   // ---------- the car ----------
-  // A black town car with a film reel strapped to the roof, 24x12.
+  // A black town car with a film reel strapped to the roof, 48x24. It faces right (headlight on the right).
   function car() {
-    return '<g class="car-sprite">' +
-      R(8, 0, 8, 4, C.concrete) + R(10, 1, 4, 2, C.ink) + R(6, 2, 12, 2, C.gold) +
-      R(4, 4, 16, 4, C.ink) + R(6, 5, 4, 2, C.glass) + R(12, 5, 6, 2, C.glass) +
-      R(0, 8, 24, 3, C.ink) + R(0, 8, 2, 1, C.gold) + R(22, 8, 2, 1, C.red) +
-      R(3, 9, 4, 3, C.asphalt) + R(4, 10, 2, 1, C.white) +
-      R(17, 9, 4, 3, C.asphalt) + R(18, 10, 2, 1, C.white) +
-      '</g>';
+    var puff = '<g class="puff">' + R(-6, 19, 3, 3, C.concrete) + R(-11, 17, 2, 2, C.concrete) + '</g>';
+    var rack = R(12, 12, 24, 2, C.asphalt);
+    var reel = R(20, 0, 8, 2, C.concrete) + R(18, 2, 12, 2, C.concrete) + R(16, 4, 16, 6, C.concrete) +
+      R(18, 10, 12, 2, C.concrete) + R(20, 12, 8, 2, C.concrete) +
+      R(22, 5, 4, 4, C.ink) + R(19, 4, 2, 2, C.ink) + R(27, 4, 2, 2, C.ink) + R(19, 8, 2, 2, C.ink) + R(27, 8, 2, 2, C.ink) +
+      R(23, 1, 2, 2, C.ink) + R(23, 11, 2, 2, C.ink);
+    var strap = R(14, 6, 20, 2, C.gold) + R(12, 11, 2, 3, C.gold) + R(34, 11, 2, 3, C.gold);
+    var cabin = R(10, 14, 28, 5, C.ink) + R(10, 14, 28, 1, C.asphalt) +
+      R(13, 15, 6, 1, C.glass) + R(12, 16, 7, 1, C.glass) + R(11, 17, 8, 1, C.glass) +
+      R(21, 15, 6, 3, C.glass) +
+      R(29, 15, 6, 1, C.glass) + R(29, 16, 7, 1, C.glass) + R(29, 17, 8, 1, C.glass) + R(29, 15, 2, 1, C.white);
+    var body = R(0, 17, 10, 2, C.ink) + R(38, 17, 10, 2, C.ink) + R(0, 17, 10, 1, C.asphalt) + R(38, 17, 10, 1, C.asphalt) +
+      R(0, 19, 48, 4, C.ink) + R(0, 22, 48, 1, C.concrete) +
+      R(46, 18, 2, 3, C.gold) + R(0, 18, 2, 3, C.red);
+    var wheels = R(6, 19, 10, 5, C.ink) + R(32, 19, 10, 5, C.ink) +
+      R(9, 21, 4, 2, C.concrete) + R(10, 21, 2, 2, C.white) + R(35, 21, 4, 2, C.concrete) + R(36, 21, 2, 2, C.white);
+    return '<g class="car-sprite">' + puff + rack + reel + strap + cabin + body + wheels + '</g>';
   }
+  // Places the car on the road. Normal: 48x24 at the scene's road line, moved by CSS (parked or driving).
+  // Hero (title screen): 2.5x, parked in the middle of the road, with an idle bob on the inner group.
   function carLayer(roadY, o) {
     if (!o || !o.car) return '';
-    return '<g class="car-anchor" transform="translate(0,' + (roadY - 12) + ')"><g class="car">' + car() + '</g></g>';
+    if (o.hero) {
+      var sc = 2.5;
+      return '<g class="car-hero" transform="translate(' + (160 - 24 * sc) + ',' + (roadY - 24 * sc) + ') scale(' + sc + ')"><g class="car-bob">' + car() + '</g></g>';
+    }
+    return '<g class="car-anchor" transform="translate(0,' + (roadY - 24) + ')"><g class="car">' + car() + '</g></g>';
   }
   function wrap(label, far, mid, near) {
     return '<svg viewBox="0 0 320 180" width="320" height="180" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="' + esc(label) + '">' +
