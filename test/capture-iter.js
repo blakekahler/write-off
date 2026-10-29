@@ -22,7 +22,7 @@ const URL = 'file://' + path.join(dir, 'index.html');
     await page.goto(URL); await fonts();
     if (await has('[data-action=to-intro]')) await page.click('[data-action=to-intro]');
     await page.click('[data-action=to-setup]');
-    await page.fill('input[data-field=name]', 'Blake'); await page.fill('input[data-field=studio]', 'durKheim Pictures');
+    await page.fill('input[data-field=name]', 'Sam'); await page.fill('input[data-field=studio]', 'durKheim Pictures');
     await page.click('[data-action=begin]');
     await settle();
   };
@@ -62,7 +62,7 @@ const URL = 'file://' + path.join(dir, 'index.html');
     else if (p === 'final') { await begin(); await playRound('shelve'); await page.click('[data-action=to-rules]'); await page.click('.rule-card[data-rule=threeYear]'); await settle(); await playRound('release'); await page.click('[data-action=to-exit]'); await page.click('[data-action=exit-skip]'); await shot('final'); }
     else if (p === 'travel') { await begin(); await page.evaluate(() => { const s = window.WRITEOFF.state; s.stopIndex = 2; s.month = 2; s.screen = 'travel'; s.travel = { notes: [], event: null, phase: 'wait', outcome: null }; window.WRITEOFF.render(); }); await shot('travel'); }
     else if (p === 'event') { await begin(); await page.evaluate(() => { const s = window.WRITEOFF.state; const ev = window.WRITEOFF_DATA.events.find(e => e.id === 'crossing'); s.stopIndex = 5; s.month = 5; s.screen = 'travel'; s.travel = { notes: [], event: ev, phase: 'event', outcome: null }; window.WRITEOFF.render(); }); await shot('event'); }
-    else if (p === 'tombstone') { await begin(); await page.evaluate(() => { const s = window.WRITEOFF.state; s.stopIndex = 3; s.month = 3; s.screen = 'travel'; s.travel = { notes: [{ kind: 'tomb', text: 'Here lies THE SUPERHERO MOVIE. Shelved by Blake, Round 1.' }], event: null, phase: 'wait', outcome: null }; window.WRITEOFF.render(); }); await shot('tombstone'); }
+    else if (p === 'tombstone') { await begin(); await page.evaluate(() => { const s = window.WRITEOFF.state; s.stopIndex = 3; s.month = 3; s.screen = 'travel'; s.travel = { notes: [{ kind: 'tomb', text: 'Here lies THE SUPERHERO MOVIE. Shelved by Sam, Round 1.' }], event: null, phase: 'wait', outcome: null }; window.WRITEOFF.render(); }); await shot('tombstone'); }
     else if (p === 'sources') { await page.goto(URL); await fonts(); await page.click('[data-action=to-sources]'); await shot('sources'); }
     else if (p === 'stop-limo') { await begin(); await page.evaluate(() => { const s = window.WRITEOFF.state; s.cash = 900; s.carTier = 3; }); await goStop('tcm'); await shot('stop-limo'); }
     else if (p === 'gallery') {

@@ -1,54 +1,49 @@
 # Write-Off
 
-An Oregon Trail style game about why studios shelve finished movies. MNGT 301 semester project, team durKheim, University of Nebraska-Lincoln, Fall 2026.
+An Oregon Trail style game about why studios shelve finished movies. You run a Hollywood studio the day after a merger, drive across Los Angeles for twelve months, and make decisions that real executives made. After each one you see what the real company did, with a source. Then you play the same year again with one rule changed, and the same decisions stop making sense. That flip is the argument.
 
-## Play it
+**Play it:** https://blakekahler.github.io/write-off/ (works on phones; a round takes about ten minutes)
 
-Live at https://blakekahler.github.io/write-off/ (GitHub Pages). Or open `index.html` in any browser. Works on phones. Number keys 1 to 3 pick choices on a keyboard.
+MNGT 301 semester project, team durKheim, University of Nebraska-Lincoln, Fall 2026.
 
-## What's in here
+## How to play
 
-| File | What it is | Who touches it |
-| --- | --- | --- |
-| `CLAUDE.md` | Project rules for Claude Code | Blake |
-| `SPEC.md` | The full game spec: screens, state, economics, visuals | Blake |
-| `PROMPTS.md` | The build phases to paste into Claude Code, in order | Blake |
-| `scenarios.js` | Every stop, choice, outcome card, source, random event and rule card | Writers |
-| `index.html` | The engine and styles | Claude Code |
-| `scenes.js` | The pixel LA backgrounds, the car and the tombstone | Claude Code, then the art teammate |
-| `rules.js` | Round-two rule math | Claude Code |
-| `test/play.js` | Optional Playwright script that plays both rounds and reports errors | Claude Code |
-| `test/scenes.html` | A gallery page showing all ten scenes side by side | The art teammate |
+Pick one of the choices at each stop. Four numbers at the bottom of the screen tell you how it's going: cash, debt against the bankers' target, your bonus, and how many people still work for you. Your bonus pays on this year's savings, so shelving a finished movie looks great on paper. Play the year once, get your receipt, then pick one rule to change and drive it again.
 
-## Editing content
+## The twelve stops and the real cases behind them
 
-Writers only edit `scenarios.js`. Each stop has a three-sentence `setup`, three `choices` with one-line labels, and a `card` with `did`, `next`, `driver`, `chip` and `source`. Keep the setups at three sentences, keep the choices to one line, and don't change a number on a card without a source. The dollar effects on choices (`thisYear`, `threeYear`, `writeOff`) are game numbers; if you change the December ones, run `checkFlip()` in the browser console to make sure round two still flips the decision.
+The dollar effects inside the game are simplified so the incentive is easy to see. The real figures are on the cards, with these sources.
 
-## Deploying
+| Month | Stop | What really happened | Source |
+| --- | --- | --- | --- |
+| April | Day one | Warner Bros. Discovery paid its CEO $51.9M for 2024, with the cash bonus at 108.6% of target. | [Variety](https://au.variety.com/2025/biz/global/david-zaslav-2024-compensation-warner-bros-discovery-exceed-bonus-targets-23430/) |
+| May | The news app | CNN+ launched March 29, 2022 and was shut down April 30, after about $300M spent. | [The Hollywood Reporter](https://www.hollywoodreporter.com/business/digital/cnn-plus-shutting-down-1235133393/) |
+| June | The library purge | HBO Max removed 36 titles in August 2022, including Infinity Train and Summer Camp Island, and laid off about 70 people the same week. | [NPR](https://www.wfae.org/business/2022-08-19/hbo-max-cuts-dozens-of-titles-in-a-cost-cutting-move-before-a-merger-with-discovery) |
+| July | The superhero movie | Warner Bros. Discovery shelved Batgirl in August 2022 with the budget at $90M after COVID delays, citing a "strategic shift" on DC and HBO Max. | [NPR](https://www.npr.org/2022/08/03/1115380005/warner-bros-kills-off-batgirl-movie-90-million-in) |
+| August | The classic movie channel | WBD cut TCM's top staff in June 2023 after an order to cut its payroll by two-thirds. | [Fortune](https://fortune.com/2023/06/29/steven-spielberg-martin-scorsese-paul-thomas-anderson-turner-classic-movies-warner-bros-david-zaslav) |
+| September | The $170 million film | Disney cancelled Fox's Mouse Guard two weeks before filming in April 2019, reportedly because it didn't want Fox making big-budget films that competed with Disney's own. | [SlashFilm](https://slashfilm.com/mouse-guard-cancelled-disney-fox) |
+| October | The kids' show | Paramount+ pulled Star Trek: Prodigy and Grease: Rise of the Pink Ladies in June 2023 and took a write-off while season two of Prodigy was still being finished. | [SlashFilm](https://slashfilm.com/1322004/paramount-removing-star-trek-prodigy-grease-prequel) |
+| November | The big write-off | Disney removed dozens of originals, including Willow, from Disney+ and Hulu on May 26, 2023 and reported a $1.5B write-off in an SEC filing. | [TheWrap](https://www.thewrap.com/disney-takes-write-off-after-removing-shows-disney-plus-hulu/) |
+| December | The animated feature | Warner Bros. shelved the finished Coyote vs. Acme in November 2023 for a reported $30M tax write-off. The CEO reportedly never watched it. | [The Numbers](https://www.the-numbers.com/movie/Coyote-v-Acme-(2026)) |
+| January | The congressman | Rep. Joaquin Castro called on the FTC and DOJ to review WBD's practice of scrapping finished films on November 13, 2023. | [TheWrap](https://www.thewrap.com/joaquin-castro-calls-on-ftc-to-review-wbd-over-coyote-vs-acme/) |
+| February | The buyer | Coyote vs. Acme survived only because Ketchup Entertainment existed to buy it. Star Trek: Prodigy survived because Netflix did. | [TheWrap](https://www.thewrap.com/coyote-vs-acme-saved-ketchup-entertainment-warner-bros/) |
+| March | The pay vote | Almost 60% of votes cast went against the CEO's $51.9M pay package at Warner Bros. Discovery in June 2025. | [Variety](https://au.variety.com/2025/tv/global/warner-bros-discovery-shareholders-vote-against-zaslav-ceo-pay-23379) |
 
-The game is four static files at the repo root (`index.html`, `scenarios.js`, `scenes.js`, `rules.js`). All script tags are relative paths, so the same files work opened from a folder on your laptop and served from GitHub Pages.
+Only about a third of these are tax write-offs. The rest come down to payments owed to creators, making the books look better, a new owner's strategy, cost-cutting orders, and mergers that leave one fewer buyer. The card after each choice names the reason in plain words.
 
-The repo is https://github.com/blakekahler/write-off and Pages serves `main` from the root, so every `git push origin main` redeploys the site at https://blakekahler.github.io/write-off/ within a minute or two. That link is what we submit to Canvas.
+## Round two: change one rule
 
-If Pages ever needs to be set up again: Settings > Pages > Build and deployment > Source: Deploy from a branch > Branch `main`, folder `/ (root)` > Save.
+- **Three-year bonus.** Your bonus pays out on three-year results, not this year's savings.
+- **Rights revert.** Anything you shelve goes back to its creators after 12 months.
+- **Creator veto.** You can't shelve a finished project without its creators' sign-off. They can force a sale instead.
+- **Write-offs count.** Every write-off on finished work is subtracted from your bonus. (planned, not in this build)
+- **One fewer buyer.** No new protections. Instead, another merger happened on day one and there's no one left to buy what you shelve. (planned, not in this build)
 
-## Testing
-
-Open `index.html` and play a round. For the automated check, `test/play.js` plays both rounds in headless Chromium at phone width, prints the two receipts, runs `checkFlip()`, and fails if anything throws, if the page scrolls sideways, if a choice button is under 48px, or if an outcome card needs a scroll bar.
-
-```
-node test/play.js                  # full speed, screenshots in test/out/
-FAST=1 node test/play.js           # reduced motion, no travel animation
-R1=shelve R2=release RULE=rightsRevert node test/play.js   # pick strategies and the round-two rule
-```
-
-It needs Playwright with Chromium available to Node (`npm i -g playwright && npx playwright install chromium`). That is a tool on your machine, not a project dependency; the game itself has none.
-
-`checkFlip()` also runs from the browser console on any screen.
+Under the rules as they are, shelving the finished animated feature in December is the best move for your bonus. Under a three-year bonus, releasing it wins. Under creator veto, you can't shelve it at all. Same movie, same numbers, different rule.
 
 ## Build log
 
-One entry per iteration, oldest first, each with screenshots captured from that iteration's commit at phone size. The detailed per-change table (every fix, every playtest) is in `LOG.md`.
+One entry per iteration, oldest first, each with screenshots captured from that iteration's commit at phone size. The detailed per-change table is in [LOG.md](LOG.md).
 
 ### 1. The loop (Phase 1, Oct 27, 2026)
 
@@ -98,13 +93,8 @@ An intro screen with the situation and what the four numbers mean. Every outcome
 
 ![The detailed scene gallery](docs/build-log/07-detailed-scene-gallery.png)
 
-### Adding an entry
+## How it's built
 
-Each image above came from `test/capture-iter.js`, which opens a checkout of the game in headless Chromium and screenshots named screens at phone size:
+Four static files (`index.html`, `scenarios.js`, `scenes.js`, `rules.js`), plain JavaScript, no framework and no build step, hosted on GitHub Pages. Every scene is drawn in code from a 16-color palette on a 4px grid. The scenario deck, the sources, and the game numbers were written by the team; the engine, the art, and the tests were built with Claude Code from a written spec ([SPEC.md](SPEC.md)), one phase at a time with a commit after each. A headless-browser script plays both rounds and checks that the December flip still holds after every change.
 
-```
-git worktree add /tmp/iter <commit>
-node test/capture-iter.js /tmp/iter /tmp/iter-shots title,stop-animated,shelved,receipt
-```
-
-Panels it knows: `title`, `intro`, `stop-animated`, `stop-purge`, `stop-hollywood`, `stop-limo`, `card-dayone`, `card-purge`, `shelved`, `receipt`, `rules`, `stop-animated-r2`, `final`, `travel`, `event`, `tombstone`, `sources`, `gallery`. Tile the panels side by side, drop the image in `docs/build-log/`, and add a dated entry here and a line in `LOG.md`.
+Working on the game? Editing content, deploying, and testing are covered in [docs/TEAM.md](docs/TEAM.md).

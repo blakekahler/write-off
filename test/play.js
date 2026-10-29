@@ -61,7 +61,7 @@ async function main() {
   await shot(page, '01b-intro');
   await checkOverflow('intro');
   await page.click('[data-action=to-setup]');
-  await page.fill('input[data-field=name]', 'Blake');
+  await page.fill('input[data-field=name]', 'Sam');
   await page.fill('input[data-field=studio]', 'durKheim Pictures');
   await page.click('[data-pace=aggressive]');
   await shot(page, '02-setup');
